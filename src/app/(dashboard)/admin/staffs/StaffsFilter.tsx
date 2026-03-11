@@ -1,0 +1,88 @@
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useRouter, useSearchParams } from "next/navigation";
+import { updateQueryParams } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+
+export function getStaffStatusBadge(status: string) {
+  if (status === "active") {
+    return <Badge className="bg-success1 text-success1-foreground">Active</Badge>
+  } else if (status === "on_leave") {
+    return <Badge className="bg-warning1 text-warning1-foreground">On leave</Badge>
+  } else if (status === "inactive") {
+    return <Badge className="bg-warning1 text-warning1-foreground">Inactive</Badge>
+  } else if (status === "terminated") {
+    return <Badge className="bg-error1 text-error1-foreground">Terminated</Badge>
+  }
+};
+
+export default function StaffsFilter() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const empStatus = searchParams.get("empStatus") || "";
+  const role = searchParams.get("role") || "";
+  const accStatus = searchParams.get("accStatus") || "";
+
+  const handleEmpStatusChange = (value: string) => {
+    const newQuery = updateQueryParams(searchParams, {
+      empStatus: value !== "all" ? value : "",
+      page: 1,
+    });
+    router.push(`?${newQuery}`);
+  }
+
+  const handleRoleChange = (value: string) => {
+    const newQuery = updateQueryParams(searchParams, {
+      role: value !== "all" ? value : "",
+      page: 1,
+    });
+    router.push(`?${newQuery}`);
+  }
+
+  const handleAccStatusChange = (value: string) => {
+    const newQuery = updateQueryParams(searchParams, {
+      accStatus: value !== "all" ? value : "",
+      page: 1,
+    });
+    router.push(`?${newQuery}`);
+  }
+
+  return (
+    <>
+      <Select value={empStatus} onValueChange={(value) => handleEmpStatusChange(value)}>
+        <SelectTrigger size="sm" className="w-full sm:w-36">
+          <SelectValue placeholder="Emp Status" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All employment status</SelectItem>
+          {["active", "on_leave", "terminated"].map(value => (
+            <SelectItem key={value} value={value}>{getStaffStatusBadge(value)}</SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      <Select value={role} onValueChange={(value) => handleRoleChange(value)}>
+        <SelectTrigger size="sm" className="w-full sm:w-36">
+          <SelectValue placeholder="Role" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All role</SelectItem>
+          <SelectItem value="admin">Admin</SelectItem>
+          <SelectItem value="warehouse_manager">Warehouse Manager</SelectItem>
+        </SelectContent>
+      </Select>
+
+      <Select value={accStatus} onValueChange={(value) => handleAccStatusChange(value)}>
+        <SelectTrigger size="sm" className="w-full sm:w-36">
+          <SelectValue placeholder="Acc Status" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All account status</SelectItem>
+          {["active", "inactive"].map(value => (
+            <SelectItem key={value} value={value}>{getStaffStatusBadge(value)}</SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </>
+  );
+}
