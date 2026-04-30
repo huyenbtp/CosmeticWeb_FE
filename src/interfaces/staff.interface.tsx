@@ -18,12 +18,10 @@ export interface IStaffDetail {
   dob: string;
   phone: string;
   image: string;
-  position: string;
   status: string;
   createdAt: string;
   updatedAt: string;
-  account: IUserAccountDetail;
-  purchasesHandled: IStaffPurchasesHandled[];
+  user: IUserAccountDetail;
 }
 
 export interface IStaffPurchasesHandled {
@@ -41,9 +39,8 @@ export interface IAddEditStaff {
   dob: string;
   phone: string;
   image: string;
-  position: string;
   status: string;
-  account: IAddEditUserAccount;
+  user: IAddEditUserAccount;
 }
 
 export interface IEditStaff {
@@ -52,7 +49,6 @@ export interface IEditStaff {
   dob: string;
   phone: string;
   image: string;
-  position: string;
   status: string;
-  account: IEditUserAccount;
+  user: IEditUserAccount;
 }

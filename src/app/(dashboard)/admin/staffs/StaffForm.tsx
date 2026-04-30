@@ -9,6 +9,8 @@ import { getStaffStatusBadge } from "./StaffsFilter";
 import dayjs from "dayjs";
 import { IAddEditStaff } from "@/interfaces/staff.interface";
 import ImageUploader, { ImageState } from "@/components/layout/ImageUploader";
+import Combobox from "@/components/layout/Combobox";
+import { IRole } from "@/interfaces/role.interface";
 
 const NullStaff: IAddEditStaff = {
   full_name: "",
@@ -16,13 +18,11 @@ const NullStaff: IAddEditStaff = {
   dob: "",
   phone: "",
   image: "",
-  position: "",
   status: "",
-  account: {
-    username: "",
-    password: "",
-    role: "",
-    status: "",
+  user: {
+    email: "",
+    role: { _id: "", name: "" },
+    is_active: true,
   },
 };
 
@@ -31,28 +31,29 @@ interface StaffFormProps {
   loading?: boolean;
   initialData?: IAddEditStaff;
   onSubmit: (data: IAddEditStaff, file: File | null, imageState: ImageState) => void;
+  roleList: IRole[];
 }
 
 export default function StaffForm({
   mode,
   loading = false,
   initialData,
-  onSubmit
+  onSubmit,
+  roleList,
 }: StaffFormProps) {
   const [data, setData] = useState(initialData ?? NullStaff);
-  const [accountData, setAccountData] = useState(data.account);
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [accountData, setAccountData] = useState(data.user);
   const [file, setFile] = useState<File | null>(null);
   const [imageState, setImageState] = useState<ImageState>("keep");
 
   useEffect(() => {
-    setData({ ...data, account: accountData });
+    setData({ ...data, user: accountData });
   }, [accountData]);
 
   useEffect(() => {
     if (initialData) {
       setData(initialData);
-      setAccountData(data.account);
+      setAccountData(initialData.user);
     }
   }, [initialData]);
 
@@ -65,8 +66,8 @@ export default function StaffForm({
 
         <Button
           disabled={loading || !data.full_name || !data.gender || !data.dob
-            || !data.phone || !data.position || !data.account.role || !data.account.status
-            || (mode === "create" && (!data.account.username || !data.account.password || !confirmPassword))}
+            || !data.phone || !data.user.role || !data.user.is_active
+            || (mode === "create" && !data.user.email)}
           onClick={() => onSubmit(data, file, imageState)}
         >
           <Save className="w-4 h-4 mr-2" />
@@ -179,29 +180,6 @@ export default function StaffForm({
                   </SelectContent>
                 </Select>
               </div>
-
-              <div>
-                <Label
-                  htmlFor="staff-position"
-                  className={`transition-all text-muted-foreground
-                    ${data.position.trim() === "" ? "opacity-0 h-0 -translate-y-2" : "opacity-100 mb-2"}
-                  `}
-                >
-                  Position
-                </Label>
-                <Select
-                  value={data.position}
-                  onValueChange={(value) => setData({ ...data, position: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Position" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="admin">Admin</SelectItem>
-                    <SelectItem value="warehouse_manager">Warehouse Manager</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
             </div>
 
             <div className="space-y-6">
@@ -209,54 +187,18 @@ export default function StaffForm({
                 <>
                   <div>
                     <Label
-                      htmlFor="account-username"
+                      htmlFor="account-email"
                       className={`transition-all text-muted-foreground
-                        ${!accountData.username || accountData.username.trim() === "" ? "opacity-0 h-0 -translate-y-2" : "opacity-100 mb-2"}
+                        ${!accountData.email || accountData.email.trim() === "" ? "opacity-0 h-0 -translate-y-2" : "opacity-100 mb-2"}
                       `}
                     >
-                      Username
+                      Email
                     </Label>
                     <Input
-                      id="account-username"
-                      value={accountData.username}
-                      onChange={(e) => setAccountData({ ...accountData, username: e.target.value })}
-                      placeholder="Account's Username"
-                      className="h-12"
-                    />
-                  </div>
-                  <div>
-                    <Label
-                      htmlFor="account-password"
-                      className={`transition-all text-muted-foreground
-                        ${(!accountData.password || accountData.password.trim() === "") ? "opacity-0 h-0 -translate-y-2" : "opacity-100 mb-2"}
-                      `}
-                    >
-                      Password
-                    </Label>
-                    <Input
-                      id="account-password"
-                      type="password"
-                      value={accountData.password}
-                      onChange={(e) => setAccountData({ ...accountData, password: e.target.value })}
-                      placeholder="Password"
-                      className="h-12"
-                    />
-                  </div>
-                  <div>
-                    <Label
-                      htmlFor="account-confirm-password"
-                      className={`transition-all text-muted-foreground
-                        ${confirmPassword.trim() === "" ? "opacity-0 h-0 -translate-y-2" : "opacity-100 mb-2"}
-                      `}
-                    >
-                      Confirm Password
-                    </Label>
-                    <Input
-                      id="account-confirm-password"
-                      type="password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="Confirm Password"
+                      id="account-email"
+                      value={accountData.email}
+                      onChange={(e) => setAccountData({ ...accountData, email: e.target.value })}
+                      placeholder="Account's Email"
                       className="h-12"
                     />
                   </div>
@@ -267,37 +209,38 @@ export default function StaffForm({
                 <Label
                   htmlFor="account-role"
                   className={`transition-all text-muted-foreground
-                    ${accountData.role.trim() === "" ? "opacity-0 h-0 -translate-y-2" : "opacity-100 mb-2"}
+                    ${accountData.role._id.trim() === "" ? "opacity-0 h-0 -translate-y-2" : "opacity-100 mb-2"}
                   `}
                 >
                   Role
                 </Label>
-                <Select
-                  value={accountData.role}
-                  onValueChange={(value) => setAccountData({ ...accountData, role: value })}
-                >
-                  <SelectTrigger size="default" className="w-full">
-                    <SelectValue placeholder="Select Role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="admin">Admin</SelectItem>
-                    <SelectItem value="warehouse_manager">Warehouse Manager</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Combobox
+                  items={roleList}
+                  selectedValue={accountData.role._id}
+                  onChange={(value) => {
+                    const newRole = roleList.find(item => item._id === value);
+                    if (newRole) setAccountData({ ...accountData, role: newRole });
+                  }}
+                  getLabel={(c) => c.name}
+                  getValue={(c) => c._id}
+                  placeholder="Select Role"
+                  emptyText="No role found."
+                  variant="input"
+                />
               </div>
 
               <div>
                 <Label
                   htmlFor="account-status"
                   className={`transition-all text-muted-foreground
-                    ${accountData.status.trim() === "" ? "opacity-0 h-0 -translate-y-2" : "opacity-100 mb-2"}
+                    ${accountData.is_active == undefined ? "opacity-0 h-0 -translate-y-2" : "opacity-100 mb-2"}
                   `}
                 >
                   Account Status
                 </Label>
                 <Select
-                  value={accountData.status}
-                  onValueChange={(value) => setAccountData({ ...accountData, status: value })}
+                  value={accountData.is_active ? "active" : "inactive"}
+                  onValueChange={(value) => setAccountData({ ...accountData, is_active: value === "active" })}
                 >
                   <SelectTrigger size="default" className="w-full">
                     <SelectValue placeholder="Select Account Status" />

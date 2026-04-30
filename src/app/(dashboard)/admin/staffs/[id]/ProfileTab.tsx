@@ -86,16 +86,6 @@ export default function ProfileTab({
                 {dayjs(data.updatedAt).format("MMMM D, YYYY")}
               </p>
             </div>
-            <div>
-              <Label className="text-sm text-muted-foreground">Position</Label>
-              <Badge variant="outline">
-                {capitalizeWords(data.position)}
-              </Badge>
-            </div>
-            <div>
-              <Label className="text-sm text-muted-foreground">Status</Label>
-              {getStaffStatusBadge(data.status)}
-            </div>
           </div>
         </CardContent>
       </Card>
@@ -110,9 +100,9 @@ export default function ProfileTab({
               <CircleUser className="w-5 h-5 text-muted-foreground" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Username</p>
+              <p className="text-sm text-muted-foreground">Email</p>
               <p className="font-medium">
-                {data.account.username}
+                {data.user.email}
               </p>
             </div>
           </div>
@@ -121,19 +111,19 @@ export default function ProfileTab({
             <div>
               <Label className="text-sm text-muted-foreground">Last Updated</Label>
               <p className="font-medium">
-                {data.account.updatedAt && dayjs(data.account.updatedAt).format("MMMM D, YYYY")}
+                {data.user.updatedAt && dayjs(data.user.updatedAt).format("MMMM D, YYYY")}
               </p>
             </div>
             <div></div>
             <div>
               <Label className="text-sm text-muted-foreground">Role</Label>
               <Badge variant="outline">
-                {capitalizeWords(data.account.role)}
+                {capitalizeWords(data.user.role)}
               </Badge>
             </div>
             <div>
               <Label className="text-sm text-muted-foreground">Status</Label>
-              {getStaffStatusBadge(data.account.status)}
+              {getStaffStatusBadge(data.user.is_active ? "active" : "inactive")}
             </div>
           </div>
 

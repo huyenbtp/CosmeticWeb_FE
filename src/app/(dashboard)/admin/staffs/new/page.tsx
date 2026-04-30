@@ -1,15 +1,33 @@
 "use client"
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import StaffForm from "../StaffForm";
 import { IAddEditStaff } from "@/interfaces/staff.interface";
 import staffAPi from "@/lib/api/staff.api";
 import { ImageState } from "@/components/layout/ImageUploader";
+import { IRole } from "@/interfaces/role.interface";
+import roleApi from "@/lib/api/role.api";
 
 export default function NewStaff() {
   const router = useRouter();
+  const [roleList, setRoleList] = useState<IRole[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const fetchAllRoles = async () => {
+    try {
+      const res = await roleApi.fetchAllRoles();
+      setRoleList(res);
+    } catch (error) {
+      console.error("Fetch roles failed:", error);
+    } finally {
+
+    }
+  };
+
+  useEffect(() => {
+    fetchAllRoles();
+  }, []);
 
   const handleSave = async (createData: IAddEditStaff, file: File | null, imageState: ImageState) => {
     setLoading(true)
@@ -17,11 +35,9 @@ export default function NewStaff() {
     try {
       const payload: any = {
         ...createData,
-        staffStatus: createData.status,
-        username: createData.account.username,
-        password: createData.account.password,
-        accountStatus: createData.account.status,
-        role: createData.account.role,
+        email: createData.user.email,
+        is_active: createData.user.is_active,
+        role_id: createData.user.role._id,
         image: file,
       }
 
@@ -40,6 +56,7 @@ export default function NewStaff() {
       mode="create"
       loading={loading}
       onSubmit={(data, file, state) => handleSave(data, file, state)}
+      roleList={roleList}
     />
   );
 }

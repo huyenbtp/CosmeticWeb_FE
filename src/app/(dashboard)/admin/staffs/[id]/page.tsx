@@ -17,7 +17,7 @@ import { IStaffDetail } from "@/interfaces/staff.interface";
 import { capitalizeWords } from "@/lib/utils";
 import staffApi from "@/lib/api/staff.api";
 
-const mockStaff: IStaffDetail = {
+const mockStaff = {
   _id: '1',
   staff_code: "ADM-2025-0001",
   full_name: "Sarah Johnson",
@@ -25,11 +25,10 @@ const mockStaff: IStaffDetail = {
   dob: "1998-02-25T00:00:00",
   phone: "0123456789",
   image: "https://picsum.photos/200/300",
-  position: "warehouse_manager",
   status: "active",
-  account: {
+  user: {
     _id: '1',
-    username: "SarahJohnson",
+    email: "sarahjohnson@email.com",
     role: "warehouse_manager",
     status: "active",
     createdAt: "2025-01-15T09:30:00",
@@ -121,7 +120,7 @@ export default function StaffDetail() {
             <h1 className="text-2xl font-semibold">{data.full_name}</h1>
             <p className="flex-1 text-muted-foreground">
               <Badge variant="outline">
-                {capitalizeWords(data.position)}
+                {capitalizeWords(data.user.role)}
               </Badge> - Employee since {dayjs(data.createdAt).format("MMM D, YYYY")}
             </p>
             <div className="flex items-center gap-2">

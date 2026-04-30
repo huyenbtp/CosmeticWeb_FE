@@ -1,27 +1,26 @@
 export interface IUser {
   _id: string;
   email: string;
-  role:  { _id: string; name: string };
+  role: { _id: string; name: string };
   is_active: boolean;
 }
 
 export interface IUserAccountDetail {
   _id: string;
-  username: string;
+  email: string;
   role: string;
-  status: string;
+  is_active: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface IAddEditUserAccount {
-  username?: string;
-  password?: string;
-  role: string;
-  status: string;
+  email?: string;
+  role: { _id: string; name: string };
+  is_active: boolean;
 }
 
 export interface IEditUserAccount {
-  role: string;
-  status: string;
+  role: { _id: string; name: string };
+  is_active: boolean;
 }
