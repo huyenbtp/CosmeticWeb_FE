@@ -1,4 +1,4 @@
-import { IAddEditUserAccount, IEditUserAccount, IUserAccount, IUserAccountDetail } from "./userAccount.interface";
+import { IAddEditUserAccount, IEditUserAccount, IUser, IUserAccountDetail } from "./user.interface";
 
 export interface IStaff {
   _id: string;
@@ -6,9 +6,8 @@ export interface IStaff {
   full_name: string;
   phone: string;
   image: string;
-  position: string;
   status: string;
-  account: IUserAccount;
+  user: IUser;
 }
 
 export interface IStaffDetail {

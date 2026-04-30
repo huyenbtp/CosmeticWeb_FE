@@ -1,8 +1,8 @@
-export interface IUserAccount {
+export interface IUser {
   _id: string;
-  username: string;
-  role: string;
-  status: string;
+  email: string;
+  role:  { _id: string; name: string };
+  is_active: boolean;
 }
 
 export interface IUserAccountDetail {

@@ -7,24 +7,24 @@ export interface CustomerPayload {
 }
 
 const customerApi = {
-  fetchAllCategories: async (): Promise<ICustomer[]> => {
-    return axios.get("/customers");
+  fetchCustomers: async (): Promise<ICustomer[]> => {
+    return axios.get("/api/customers");
   },
 
   fetchCustomerById: async (id: string): Promise<ICustomer> => {
-    return axios.get(`/customers/${id}`);
+    return axios.get(`/api/customers/${id}`);
   },
 
   fetchCustomerByPhone: async (phone: string): Promise<ICustomer> => {
-    return axios.get(`/customers/phone/${phone}`);
+    return axios.get(`/api/customers/phone/${phone}`);
   },
 
   createCustomer: async (payload: CustomerPayload): Promise<ICustomer> => {
-    return axios.post("/customers", payload);
+    return axios.post("/api/customers", payload);
   },
 
   updateCustomer: async (id: string, payload: CustomerPayload): Promise<ICustomer> => {
-    return axios.put(`/customers/${id}`, payload);
+    return axios.put(`/api/customers/${id}`, payload);
   },
 }
 

@@ -1,21 +1,31 @@
 import axios from "@/lib/axios";
 
 export interface LoginRequest {
-  username: string;
+  email: string;
   password: string;
 }
 
 export interface LoginResponse {
   token: string;
+  user: UserInfo;
+  profile: StaffInfo | CustomerInfo;
+}
+
+export interface UserInfo {
+  _id: string;
+  email: string;
   role: string;
-  user: StaffInfo;
 }
 
 export interface StaffInfo {
   _id: string;
   full_name: string;
-  position: string;
   image: string;
+}
+
+export interface CustomerInfo {
+  _id: string;
+  full_name: string;
 }
 
 const authApi = {
@@ -25,15 +35,18 @@ const authApi = {
 
   logout: () => axios.post("/auth/logout"),
   
+  resendVerification: (payload: {
+    email: string;
+  }) => axios.post("/auth/resend-verification", payload),
+  
   changePassword: (payload: {
     oldPassword: string;
     newPassword: string;
   }) => axios.post("/auth/change-password", payload),
 
-  resetPassword: (payload: {
-    accountId: string;
-    newPassword: string;
-  }) => axios.post("/auth/reset-password", payload),
+  forgotPassword: (payload: {
+    email: string;
+  }) => axios.post("/auth/forgot-password", payload),
 }
 
 export default authApi;

@@ -2,16 +2,15 @@ import { IEditStaff, IStaff, IStaffDetail } from "@/interfaces/staff.interface";
 import axios from "@/lib/axios";
 
 export type StaffStatus = "active" | "on_leave" | "terminated";
-export type AccountStatus = "active" | "inactive";
-export type AccountRole = "admin" | "cashier" | "warehouse_manager" | "order_processing";
+export type UserRole = "admin" | "cashier" | "warehouse_manager" | "order_processing";
 
 export interface FetchStaffsParams {
   page?: number;
   limit?: number;
   q?: string;
-  staffStatus?: StaffStatus;
-  role?: string;
-  accountStatus?: AccountStatus;
+  status?: StaffStatus;
+  role_id?: string;
+  is_active?: boolean;
 }
 
 export interface CreateStaffPayload {
@@ -19,13 +18,11 @@ export interface CreateStaffPayload {
   gender: string;
   dob: string;
   phone: string;
-  position?: string;
-  staffStatus?: StaffStatus;
+  status?: StaffStatus;
   image?: File | null;
-  username: string;
-  password: string;
-  role?: AccountRole;
-  accountStatus?: AccountStatus
+  email: string;
+  role_id: string;
+  is_active?: boolean
 }
 
 export interface UpdateStaffPayload {
@@ -33,24 +30,23 @@ export interface UpdateStaffPayload {
   gender: string;
   dob: string;
   phone: string;
-  position?: string;
-  staffStatus?: StaffStatus;
+  status?: StaffStatus;
   image?: File | null;
-  role?: AccountRole;
-  accountStatus?: AccountStatus
+  role_id?: string;
+  is_active?: boolean
 }
 
 const staffApi = {
   fetchStaffs: async (params: FetchStaffsParams): Promise<{ data: any, pagination: any }> => {
-    return axios.get("/staffs", { params });
+    return axios.get("/api/staffs", { params });
   },
 
   fetchStaffById: async (id: string): Promise<IStaffDetail> => {
-    return axios.get(`/staffs/${id}`);
+    return axios.get(`/api/staffs/${id}`);
   },
 
   fetchStaffByIdToAdminEdit: async (id: string): Promise<IEditStaff> => {
-    return axios.get(`/staffs/admin-edit/${id}`);
+    return axios.get(`/api/staffs/admin-edit/${id}`);
   },
 
   createStaff: async (payload: CreateStaffPayload): Promise<IStaff> => {
@@ -66,7 +62,7 @@ const staffApi = {
       }
     });
 
-    return axios.post("/staffs", formData);
+    return axios.post("/api/staffs", formData);
   },
 
   updateStaff: async (id: string, payload: UpdateStaffPayload): Promise<IStaff> => {
@@ -87,15 +83,15 @@ const staffApi = {
       formData.append(key, value as any);
     });
 
-    return axios.put(`/staffs/${id}`, formData);
+    return axios.put(`/api/staffs/${id}`, formData);
   },
 
   updateStatus: async (id: string, status: StaffStatus): Promise<IStaff> => {
-  return axios.patch(`/staffs/${id}/status`, { status });
+  return axios.patch(`/api/staffs/${id}/status`, { status });
   },
 
   deleteStaff: async (id: string) => {
-    return axios.delete(`/staffs/${id}`);
+    return axios.delete(`/api/staffs/${id}`);
   },
 }
 

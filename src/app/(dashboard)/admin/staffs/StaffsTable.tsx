@@ -49,97 +49,101 @@ export default function StaffsTable({
               <Spinner className="size-10" />
             </TableCell>
           </TableRow>
-        ) : data.length > 0 ? (data.map((staff) => (
-          <TableRow key={staff._id}>
-            <TableCell className="w-14/100 ">
-              {staff.staff_code}
-            </TableCell>
+        ) : data.length > 0 ? (data.map((staff) => {
+          const accStatus = staff.user.is_active ? "active" : "inactive";
 
-            <TableCell className="w-22/100 max-w-80 pr-8" title={staff.full_name}>
-              <div className="flex items-center gap-3">
-                <Avatar className="h-10 w-10">
-                  <AvatarImage src={staff.image} alt={staff.full_name} />
-                  <AvatarFallback className="bg-primary text-white">
-                    {staff.full_name[0]}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="flex-1 font-medium truncate">{staff.full_name}</span>
-              </div>
-            </TableCell>
+          return (
+            <TableRow key={staff._id}>
+              <TableCell className="w-14/100 ">
+                {staff.staff_code}
+              </TableCell>
 
-            <TableCell className="w-12/100 ">
-              {staff.phone}
-            </TableCell>
+              <TableCell className="w-22/100 max-w-80 pr-8" title={staff.full_name}>
+                <div className="flex items-center gap-3">
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src={staff.image} alt={staff.full_name} />
+                    <AvatarFallback className="bg-primary text-white">
+                      {staff.full_name[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="flex-1 font-medium truncate">{staff.full_name}</span>
+                </div>
+              </TableCell>
 
-            <TableCell className="w-14/100 font-medium">
-              <Select
-                defaultValue={staff.status}
-                value={staff.status}
-                onValueChange={() => { }}
-              >
-                <SelectTrigger size="xs" className={`w-fit text-xs shadow-none ${getStatusStyle(staff.status)}`}>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="active" >Active</SelectItem>
-                  <SelectItem value="on_leave">On leave</SelectItem>
-                  <SelectItem value="terminated">Terminated</SelectItem>
-                </SelectContent>
-              </Select>
-            </TableCell>
+              <TableCell className="w-12/100 ">
+                {staff.phone}
+              </TableCell>
 
-            <TableCell className="w-14/100 font-medium ">
-              <Select
-                defaultValue={staff.account.role}
-                value={staff.account.role}
-                onValueChange={() => { }}
-              >
-                <SelectTrigger size="xs" className="inline-flex w-fit bg-secondary text-primary text-xs shadow-none">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="admin">Admin</SelectItem>
-                  <SelectItem value="warehouse_manager">Warehouse Manager</SelectItem>
-                </SelectContent>
-              </Select>
-            </TableCell>
+              <TableCell className="w-14/100 font-medium">
+                <Select
+                  defaultValue={staff.status}
+                  value={staff.status}
+                  onValueChange={() => { }}
+                >
+                  <SelectTrigger size="xs" className={`w-fit text-xs shadow-none ${getStatusStyle(staff.status)}`}>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active" >Active</SelectItem>
+                    <SelectItem value="on_leave">On leave</SelectItem>
+                    <SelectItem value="terminated">Terminated</SelectItem>
+                  </SelectContent>
+                </Select>
+              </TableCell>
 
-            <TableCell className="w-12/100 font-medium">
-              <Select
-                defaultValue={staff.account.status}
-                value={staff.account.status}
-                onValueChange={() => { }}
-              >
-                <SelectTrigger size="xs" className={`w-fit text-xs shadow-none ${getStatusStyle(staff.account.status)}`}>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="active" >Active</SelectItem>
-                  <SelectItem value="inactive">In Active</SelectItem>
-                </SelectContent>
-              </Select>
-            </TableCell>
+              <TableCell className="w-14/100 font-medium ">
+                <Select
+                  defaultValue={staff.user.role.name}
+                  value={staff.user.role.name}
+                  onValueChange={() => { }}
+                >
+                  <SelectTrigger size="xs" className="inline-flex w-fit bg-secondary text-primary text-xs shadow-none">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="warehouse_manager">Warehouse Manager</SelectItem>
+                  </SelectContent>
+                </Select>
+              </TableCell>
 
-            <TableCell className="text-center">
-              <Button
-                variant="ghost"
-                size="sm"
-                title="View Detail"
-                onClick={() => { onView(staff._id) }}
-              >
-                <Eye className="w-4 h-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                title="Edit Staff"
-                onClick={() => { onEdit(staff._id) }}
-              >
-                <Edit className="w-4 h-4" />
-              </Button>
-            </TableCell>
-          </TableRow>
-        ))) : (
+              <TableCell className="w-12/100 font-medium">
+                <Select
+                  defaultValue={accStatus}
+                  value={accStatus}
+                  onValueChange={() => { }}
+                >
+                  <SelectTrigger size="xs" className={`w-fit text-xs shadow-none ${getStatusStyle(accStatus)}`}>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active" >Active</SelectItem>
+                    <SelectItem value="inactive">In Active</SelectItem>
+                  </SelectContent>
+                </Select>
+              </TableCell>
+
+              <TableCell className="text-center">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  title="View Detail"
+                  onClick={() => { onView(staff._id) }}
+                >
+                  <Eye className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  title="Edit Staff"
+                  onClick={() => { onEdit(staff._id) }}
+                >
+                  <Edit className="w-4 h-4" />
+                </Button>
+              </TableCell>
+            </TableRow>
+          )
+        })) : (
           <TableRow>
             <TableCell colSpan={7} align="center">
               No data available

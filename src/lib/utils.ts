@@ -18,7 +18,7 @@ export function updateQueryParams(
       params.set(key, String(value));
     }
   });
-  
+
   return params.toString();
 }
 
@@ -29,4 +29,17 @@ export function capitalize(str: string) {
 
 export function capitalizeWords(str: string) {
   return str.replace(/\b\w/g, char => char.toUpperCase());
+}
+
+export function getRoleName(role: string) {
+  switch (role) {
+    case "admin":
+      return "Admin"
+    case "warehouse_manager":
+      return "Warehouse Manager"
+    case "order_processing":
+      return "Order Processing Staff"
+    default:
+      return ""
+  }
 }

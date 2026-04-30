@@ -6,26 +6,41 @@ import { useState } from "react";
 import { useTheme } from 'next-themes'
 import { Moon, Sun } from "lucide-react";
 import authApi from "@/lib/api/auth.api";
+import { UserRole } from "@/lib/api/staff.api";
 
 export default function LoginPage() {
   const { theme, setTheme } = useTheme()
   const router = useRouter();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
-    if (!username.trim() || !password.trim()) return;
+    if (!email.trim() || !password.trim()) return;
     setLoading(true);
 
     try {
-      const res = await authApi.login({ username, password });
+      const res = await authApi.login({ email, password });
 
-      const { role, user } = res;
+      const { user, profile } = res;
 
       localStorage.setItem("auth_user", JSON.stringify(user));
+      localStorage.setItem("auth_profile", JSON.stringify(profile));
 
-      router.push(`/${role}/dashboard`);
+      const link = (role: UserRole) => {
+        switch (role) {
+          case "admin":
+            return "admin"
+          case "warehouse_manager":
+            return "warehouse"
+          case "order_processing":
+            return "order-processing"
+          default:
+            return ""
+        }
+      };
+
+      router.push(`/${link}/dashboard`);
     } catch (error: any) {
       console.error("Login failed:", error);
     } finally {
@@ -50,11 +65,11 @@ export default function LoginPage() {
         <CardContent className="px-8 py-4 flex flex-col gap-4">
           <h1 className="text-2xl font-bold text-center mb-4">Login to your account</h1>
           <input
-            type="text"
-            placeholder="Username"
+            type="email"
+            placeholder="Email"
             className="border p-2 pl-4 rounded-md"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             disabled={loading}
           />
           <input
@@ -68,7 +83,7 @@ export default function LoginPage() {
           <Button
             className="w-full"
             onClick={handleLogin}
-            disabled={loading || !username.trim() || !password.trim()}
+            disabled={loading || !email.trim() || !password.trim()}
           >
             Login
           </Button>

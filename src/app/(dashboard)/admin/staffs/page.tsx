@@ -12,115 +12,9 @@ import StaffsFilter from "./StaffsFilter";
 import StaffsTable from "./StaffsTable";
 import { Pagination } from "@/components/layout/Pagination";
 import { IStaff } from "@/interfaces/staff.interface";
-import staffApi, { AccountStatus, StaffStatus } from "@/lib/api/staff.api";
-
-const mockStaffs: IStaff[] = [
-  {
-    _id: '1',
-    staff_code: "ADM-2025-0001",
-    full_name: "Sarah Johnson",
-    phone: "0123456789",
-    image: "https://picsum.photos/200/300?random=1",
-    position: "admin",
-    status: "active",
-    account: {
-      _id: '1',
-      username: "sarah_johnson",
-      role: "admin",
-      status: "active",
-    },
-  },
-  {
-    _id: '2',
-    staff_code: "ADM-2025-0002",
-    full_name: "Mike Chen",
-    phone: "0123456789",
-    image: "https://picsum.photos/200/300?random=2",
-    position: "admin",
-    status: "active",
-    account: {
-      _id: '1',
-      username: "mike_chen",
-      role: "admin",
-      status: "active",
-    },
-  },
-  {
-    _id: '3',
-    staff_code: "WAM-2025-0003",
-    full_name: "Emma Wilson",
-    phone: "0123456789",
-    image: "https://picsum.photos/200/300?random=3",
-    position: "warehouse_manager",
-    status: "active",
-    account: {
-      _id: '1',
-      username: "emma_wilson",
-      role: "warehouse_manager",
-      status: "active",
-    },
-  },
-  {
-    _id: '4',
-    staff_code: "WAM-2025-0004",
-    full_name: "David Brown",
-    phone: "0123456789",
-    image: "https://picsum.photos/200/300?random=4",
-    position: "warehouse_manager",
-    status: "on_leave",
-    account: {
-      _id: '1',
-      username: "david_brown",
-      role: "warehouse_manager",
-      status: "active",
-    },
-  },
-  {
-    _id: '5',
-    staff_code: "WAM-2025-0005",
-    full_name: "Lisa Garcia",
-    phone: "0123456789",
-    image: "https://picsum.photos/200/300?random=5",
-    position: "warehouse_manager",
-    status: "terminated",
-    account: {
-      _id: '1',
-      username: "lisa_garcia",
-      role: "warehouse_manager",
-      status: "inactive",
-    },
-  },
-  {
-    _id: '6',
-    staff_code: "WAM-2025-0006",
-    full_name: "James Taylor",
-    phone: "0123456789",
-    image: "https://picsum.photos/200/300?random=6",
-    position: "warehouse_manager",
-    status: "active",
-    account: {
-      _id: '1',
-      username: "james_taylor",
-      role: "warehouse_manager",
-      status: "active",
-    },
-  },
-  {
-    _id: '7',
-    staff_code: "WAM-2025-0007",
-    full_name: "Maria Rodriguez",
-    phone: "0123456789",
-    image: "https://picsum.photos/200/300?random=7",
-    position: "warehouse_manager",
-    status: "on_leave",
-    account: {
-      _id: '1',
-      username: "maria_rodriguez",
-      role: "warehouse_manager",
-      status: "active",
-    },
-  }
-];
+import staffApi, { StaffStatus } from "@/lib/api/staff.api";
+import { IRole } from "@/interfaces/role.interface";
+import roleApi from "@/lib/api/role.api";
 
 type StaffKey = "staff_code" | "full_name" | "phone";
 
@@ -131,26 +25,42 @@ export default function StaffsManagement() {
 
   const [data, setData] = useState<IStaff[]>([]);
   const [total, setTotal] = useState(0);
+  const [roles, setRoles] = useState<IRole[]>([]);
 
   const [limit, setLimit] = useState(7);
   const rawPage = Number(searchParams.get("page"));
   const page = Number.isInteger(rawPage) && rawPage > 0 ? rawPage : 1;
   const searchQuery = searchParams.get("q") || "";
-  const staffStatus = searchParams.get("empStatus") || "";
-  const role = searchParams.get("role") || "";
-  const accountStatus = searchParams.get("accStatus") || "";
+  const status = searchParams.get("status") || "";
+  const roleId = searchParams.get("role") || "";
+  const is_active = searchParams.get("is_active") || "";
+
+  useEffect(() => {
+    const initFilters = async () => {
+      try {
+        const roleRes = await roleApi.fetchAllRoles();
+        setRoles(roleRes);
+      } catch (err) {
+        console.error("Init filter failed", err);
+      }
+    };
+
+    initFilters();
+  }, []);
 
   const fetchStaffs = async () => {
     setLoading(true);
 
     try {
+      const active = is_active === "active" ? true : is_active === "inactive" ? false : undefined;
+
       const res = await staffApi.fetchStaffs({
         page,
         limit,
         q: searchQuery || undefined,
-        staffStatus: staffStatus as StaffStatus || undefined,
-        role: role ?? undefined,
-        accountStatus: accountStatus as AccountStatus || undefined,
+        status: status as StaffStatus || undefined,
+        role_id: roleId ?? undefined,
+        is_active: active,
       });
       setData(res.data);
       setTotal(res.pagination?.total ?? 0);
@@ -163,7 +73,7 @@ export default function StaffsManagement() {
 
   useEffect(() => {
     fetchStaffs();
-  }, [page, limit, searchQuery, staffStatus, role, accountStatus]);
+  }, [page, limit, searchQuery, status, roleId, is_active]);
 
   return (
     <div className="px-8 py-6 space-y-8">
@@ -197,7 +107,7 @@ export default function StaffsManagement() {
             </Select>
             */}
 
-            <StaffsFilter />
+            <StaffsFilter roles={roles} />
           </div>
         </CardHeader>
 

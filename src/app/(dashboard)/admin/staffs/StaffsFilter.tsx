@@ -1,7 +1,8 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useRouter, useSearchParams } from "next/navigation";
-import { updateQueryParams } from "@/lib/utils";
+import { capitalizeWords, getRoleName, updateQueryParams } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { IRole } from "@/interfaces/role.interface";
 
 export function getStaffStatusBadge(status: string) {
   if (status === "active") {
@@ -15,17 +16,21 @@ export function getStaffStatusBadge(status: string) {
   }
 };
 
-export default function StaffsFilter() {
+export default function StaffsFilter({
+  roles
+}: {
+  roles: IRole[]
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const empStatus = searchParams.get("empStatus") || "";
-  const role = searchParams.get("role") || "";
-  const accStatus = searchParams.get("accStatus") || "";
+  const status = searchParams.get("status") || "";
+  const roleId = searchParams.get("role") || "";
+  const is_active = searchParams.get("is_active") || "";
 
   const handleEmpStatusChange = (value: string) => {
     const newQuery = updateQueryParams(searchParams, {
-      empStatus: value !== "all" ? value : "",
+      status: value !== "all" ? value : "",
       page: 1,
     });
     router.push(`?${newQuery}`);
@@ -41,7 +46,7 @@ export default function StaffsFilter() {
 
   const handleAccStatusChange = (value: string) => {
     const newQuery = updateQueryParams(searchParams, {
-      accStatus: value !== "all" ? value : "",
+      is_active: value !== "all" ? value : "",
       page: 1,
     });
     router.push(`?${newQuery}`);
@@ -49,7 +54,7 @@ export default function StaffsFilter() {
 
   return (
     <>
-      <Select value={empStatus} onValueChange={(value) => handleEmpStatusChange(value)}>
+      <Select value={status} onValueChange={(value) => handleEmpStatusChange(value)}>
         <SelectTrigger size="sm" className="w-full sm:w-36">
           <SelectValue placeholder="Emp Status" />
         </SelectTrigger>
@@ -61,18 +66,19 @@ export default function StaffsFilter() {
         </SelectContent>
       </Select>
 
-      <Select value={role} onValueChange={(value) => handleRoleChange(value)}>
+      <Select value={roleId} onValueChange={(value) => handleRoleChange(value)}>
         <SelectTrigger size="sm" className="w-full sm:w-36">
           <SelectValue placeholder="Role" />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All role</SelectItem>
-          <SelectItem value="admin">Admin</SelectItem>
-          <SelectItem value="warehouse_manager">Warehouse Manager</SelectItem>
+          {roles.map((item) => (
+            <SelectItem key={item._id} value={item._id}>{getRoleName(item.name)}</SelectItem>
+          ))}
         </SelectContent>
       </Select>
 
-      <Select value={accStatus} onValueChange={(value) => handleAccStatusChange(value)}>
+      <Select value={is_active} onValueChange={(value) => handleAccStatusChange(value)}>
         <SelectTrigger size="sm" className="w-full sm:w-36">
           <SelectValue placeholder="Acc Status" />
         </SelectTrigger>

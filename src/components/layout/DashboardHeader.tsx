@@ -18,12 +18,13 @@ export function DashboardHeader() {
   const { theme, setTheme } = useTheme()
   const router = useRouter();
 
-  const user = JSON.parse(localStorage.getItem("auth_user") || "{}");
+  const profile = JSON.parse(localStorage.getItem("auth_profile") || "{}");
 
   const handleLogout = async () => {
     //await authApi.logout();
     clearAuth();
     localStorage.removeItem("auth_user");
+    localStorage.removeItem("auth_profile");
 
     router.push("/login");
   };
@@ -60,8 +61,8 @@ export function DashboardHeader() {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-8 w-8 rounded-full">
               <Avatar className="h-8 w-8">
-                <AvatarImage src={user.image} alt="Profile Picture" />
-                <AvatarFallback className="bg-primary text-white">{user.full_name[0]}</AvatarFallback>
+                <AvatarImage src={profile.image} alt="Profile Picture" />
+                <AvatarFallback className="bg-primary text-white">{profile.full_name[0]}</AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>

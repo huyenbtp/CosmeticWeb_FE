@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 // Các route yêu cầu role cụ thể
 const roleRoutes = {
   admin: ["/admin"],
-  warehouse_manager: ["/warehouse-manager"],
+  warehouse_manager: ["/warehouse"],
   order_processing: ["/order-processing"],
 };
 
@@ -25,9 +25,9 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/admin/dashboard", req.url));
   }
 
-  // ✅ Nếu vào "/warehouse-manager" → tự redirect sang "/warehouse-manager/dashboard"
-  if (pathname === "/warehouse-manager") {
-    return NextResponse.redirect(new URL("/warehouse-manager/dashboard", req.url));
+  // ✅ Nếu vào "/warehouse" → tự redirect sang "/warehouse/dashboard"
+  if (pathname === "/warehouse") {
+    return NextResponse.redirect(new URL("/warehouse/dashboard", req.url));
   }
 
   // ✅ Nếu vào "/order-processing" → tự redirect sang "/order-processing/dashboard"
@@ -40,8 +40,8 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/admin/dashboard", req.url));
   }
 
-  if (role === "warehouse_manager" && !pathname.startsWith("/warehouse-manager")) {
-    return NextResponse.redirect(new URL("/warehouse-manager/dashboard", req.url));
+  if (role === "warehouse_manager" && !pathname.startsWith("/warehouse")) {
+    return NextResponse.redirect(new URL("/warehouse/dashboard", req.url));
   }
 
   if (role === "order_processing" && !pathname.startsWith("/order-processing")) {
@@ -54,7 +54,7 @@ export function middleware(req: NextRequest) {
       role === "admin"
         ? "/admin/dashboard"
         : role === "warehouse_manager"
-          ? "/warehouse-manager/dashboard"
+          ? "/warehouse/dashboard"
           : "/order-processing/dashboard";
     return NextResponse.redirect(new URL(redirectUrl, req.url));
   }
