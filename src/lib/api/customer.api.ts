@@ -1,31 +1,22 @@
-import { ICustomer } from "@/interfaces/customer.interface";
+import { ICustomer, ICustomerDetail } from "@/interfaces/customer.interface";
 import axios from "@/lib/axios";
 
-export interface CustomerPayload {
-  name: string;
-  phone: string;
+export interface FetchCustomersParams {
+  page?: number;
+  limit?: number;
+  q?: string;
+  is_active?: boolean;
 }
 
 const customerApi = {
-  fetchCustomers: async (): Promise<ICustomer[]> => {
-    return axios.get("/api/customers");
+  fetchCustomers: async (params: FetchCustomersParams): Promise<{ data: any, pagination: any }> => {
+    return axios.get("/api/customers", { params });
   },
 
-  fetchCustomerById: async (id: string): Promise<ICustomer> => {
+  fetchCustomerById: async (id: string): Promise<ICustomerDetail> => {
     return axios.get(`/api/customers/${id}`);
   },
 
-  fetchCustomerByPhone: async (phone: string): Promise<ICustomer> => {
-    return axios.get(`/api/customers/phone/${phone}`);
-  },
-
-  createCustomer: async (payload: CustomerPayload): Promise<ICustomer> => {
-    return axios.post("/api/customers", payload);
-  },
-
-  updateCustomer: async (id: string, payload: CustomerPayload): Promise<ICustomer> => {
-    return axios.put(`/api/customers/${id}`, payload);
-  },
 }
 
 export default customerApi;

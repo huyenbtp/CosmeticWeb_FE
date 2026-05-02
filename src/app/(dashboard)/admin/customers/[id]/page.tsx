@@ -1,17 +1,20 @@
 "use client"
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Edit, Save, } from "lucide-react";
 import StatsCard from "./StatsCard";
 import ProfileTab from "./ProfileTab";
-import PurchaseHistoryTab from "./PurchaseHistoryTab";
-import { useRouter } from "next/navigation";
+import OrderHistoryTab from "./OrderHistoryTab";
+import { useParams, useRouter } from "next/navigation";
 import { ICustomerDetail } from "@/interfaces/customer.interface";
 import dayjs from "dayjs";
+import customerApi from "@/lib/api/customer.api";
+import AddressesTab from "./AddressList";
 
-const mockCustomer: ICustomerDetail = {
+const mockCustomers = {
   _id: '1',
   name: "Sarah Johnson",
   phone: "+1 (555) 123-4567",
@@ -62,24 +65,60 @@ const mockCustomer: ICustomerDetail = {
 
 export default function ProductDetail() {
   const router = useRouter();
-  const [data, setData] = useState<ICustomerDetail>(mockCustomer);
-  const [isEditing, setIsEditing] = useState(false);
+  const { id } = useParams<{ id: string }>();
+  const [data, setData] = useState<ICustomerDetail>();
+  const [loading, setLoading] = useState(false);
 
-  return (
+  const fetchCustomer = async () => {
+    setLoading(true)
+    try {
+      const res = await customerApi.fetchCustomerById(id);
+      setData(res);
+    } catch (error) {
+      console.error("Fetch customer failed:", error);
+    } finally {
+      setLoading(false)
+    }
+  };
+
+  useEffect(() => {
+    fetchCustomer();
+  }, []);
+
+  const handleUserIsActiveChange = async (is_active: boolean) => {
+    try {
+      
+    } catch (error) {
+      console.error("Change user is_active failed:", error);
+    } finally {
+      fetchCustomer()
+    }
+  };
+
+  if (loading) return (
+    <div className="h-full flex justify-center items-center">
+      <Spinner className="size-12" />
+    </div>
+  )
+  if (data) return (
     <div className="px-8 py-6 space-y-6">
       <div className="flex items-center gap-4">
         <div className="flex-1 mr-10">
-          <h1 className="text-2xl font-semibold">{data.name}</h1>
+          <h1 className="text-2xl font-semibold">{data.full_name}</h1>
           <p className="text-muted-foreground">
             Customer since {dayjs(data.createdAt).format("MMM D, YYYY")}
           </p>
         </div>
 
         <Button
-          onClick={() => { setIsEditing(!isEditing) }}
+          variant={data.user.is_active ? "destructive" : "outline"}
+          onClick={() => {
+            data.user.is_active
+              ? handleUserIsActiveChange(false)
+              : handleUserIsActiveChange(true)
+          }}
         >
-          {isEditing ? <Save className="w-4 h-4 mr-2" /> : <Edit className="w-4 h-4 mr-2" />}
-          {isEditing ? 'Save Changes' : 'Edit Customer'}
+          {data.user.is_active ? 'Inactivate' : 'Activate'} User
         </Button>
       </div>
 
@@ -88,15 +127,20 @@ export default function ProductDetail() {
       <Tabs defaultValue="details" className="w-full space-y-1">
         <TabsList className="space-x-2">
           <TabsTrigger value="details">Profile</TabsTrigger>
-          <TabsTrigger value="analytics">Purchase History</TabsTrigger>
+          <TabsTrigger value="orders">Order History</TabsTrigger>
+          <TabsTrigger value="addresses">Addresses</TabsTrigger>
         </TabsList>
 
         <TabsContent value="details" className="space-y-6">
-          <ProfileTab data={data} setData={setData} isEditing={isEditing} />
+          <ProfileTab data={data} setData={setData} />
         </TabsContent>
 
-        <TabsContent value="analytics" className="space-y-6">
-          <PurchaseHistoryTab data={data} />
+        <TabsContent value="orders" className="space-y-6">
+          <OrderHistoryTab data={data} />
+        </TabsContent>
+
+        <TabsContent value="addresses" className="space-y-6">
+          <AddressesTab data={data} />
         </TabsContent>
       </Tabs>
     </div>

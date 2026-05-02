@@ -1,27 +1,48 @@
 export interface ICustomer {
   _id: string;
-  name: string;
-  phone: string;
-  points: number;
+  full_name: string;
+  email: string;
+  is_active: boolean;
+  totalOrders: number;
+  totalSpent: number;
   createdAt: string;
 }
 
 export interface ICustomerDetail {
   _id: string;
-  name: string;
+  full_name: string;
+  gender: string;
+  dob: string;
   phone: string;
-  points: number;
-  createdAt: string;
-  lastPurchase: string;
-  totalPurchases: number;
-  totalSpent: number;
-  averagePurchaseValue: number;
-  purchases: {
+  user: {
     _id: string;
-    date: string;
+    email: string;
+    is_active: boolean;
+    is_verified: boolean;
+  };
+  createdAt: string;
+  lastOrder: string;
+  totalOrders: number;
+  totalSpent: number;
+  averageOrderValue: number;
+  orders: {
+    _id: string;
+    order_code: string;
     total_items: number;
-    final_amount: number;
+    total_estimated: number;
     payment_method: string;
+    order_status: string;
+    createdAt: string;
+  }[];
+  userAddressList: {
+    _id: string;
+    receiver_name: string;
+    phone: string;
+    address_line: string;
+    ward: string;
+    district: string;
+    city: string;
+    is_default: boolean;
   }[];
 }
 
