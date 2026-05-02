@@ -9,15 +9,15 @@ export interface CategoryPayload {
 
 const categoryApi = {
   fetchAllCategories: async (): Promise<ICategory[]> => {
-    return axios.get("/categories");
+    return axios.get("/api/categories");
   },
 
   createCategory: async (payload: CategoryPayload): Promise<ICategory> => {
-    return axios.post("/categories", payload);
+    return axios.post("/api/categories", payload);
   },
 
   updateCategory: async (id: string, payload: CategoryPayload): Promise<ICategory> => {
-    return axios.put(`/categories/${id}`, payload);
+    return axios.put(`/api/categories/${id}`, payload);
   },
 }
 

@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ImageWithFallback } from "@/components/layout/ImageWithFallback";
 import { Eye, Edit, } from "lucide-react";
 import { IBrand } from "@/interfaces/brand.interface";
+import { Spinner } from "@/components/ui/spinner";
 
 export function getStatusStyle(status: string) {
   if (status === "active") {
@@ -15,13 +16,15 @@ export function getStatusStyle(status: string) {
 };
 
 export default function BrandsTable({
+  loading,
   data,
   onView,
   onEdit,
 }: {
+  loading: boolean;
   data: IBrand[];
   onView: (id: string) => void;
-  onEdit: (id: string) => void;
+  onEdit: (item: IBrand) => void;
 }) {
 
   return (
@@ -37,7 +40,13 @@ export default function BrandsTable({
       </TableHeader>
 
       <TableBody>
-        {data.length > 0 ? (data.map((brand) => (
+        {loading ? (
+          <TableRow>
+            <TableCell colSpan={7} align="center">
+              <Spinner className="size-10" />
+            </TableCell>
+          </TableRow>
+        ) : data.length > 0 ? (data.map((brand) => (
           <TableRow key={brand._id}>
             <TableCell className="w-20/100 font-medium">
               {brand.name}
@@ -47,7 +56,7 @@ export default function BrandsTable({
               <ImageWithFallback
                 src={brand.logo}
                 alt={brand.name}
-                className="w-20 h-10 rounded-lg object-cover"
+                className="w-10 h-10 rounded-lg object-cover"
               />
             </TableCell>
 
@@ -75,7 +84,7 @@ export default function BrandsTable({
               <Button
                 variant="ghost"
                 size="sm"
-                title="View Detail"
+                title="View All Products"
                 onClick={() => { onView(brand._id) }}
               >
                 <Eye className="w-4 h-4" />
@@ -84,7 +93,7 @@ export default function BrandsTable({
                 variant="ghost"
                 size="sm"
                 title="Edit Brand"
-                onClick={() => { onEdit(brand._id) }}
+                onClick={() => { onEdit(brand) }}
               >
                 <Edit className="w-4 h-4" />
               </Button>
@@ -93,7 +102,7 @@ export default function BrandsTable({
         ))) : (
           <TableRow>
             <TableCell colSpan={7} align="center">
-              Không có dữ liệu
+              No data available
             </TableCell>
           </TableRow>
         )}

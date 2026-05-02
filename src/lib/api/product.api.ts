@@ -38,23 +38,23 @@ export interface ProductPayload {
 
 const productApi = {
   fetchProductsInfinite: async (params: FetchProductsInfiniteParams): Promise<ICheckoutProduct[]> => {
-    return axios.get("/products/infinite", { params });
+    return axios.get("/api/products/infinite", { params });
   },
 
   fetchProductsPagination: async (params: FetchProductsPaginationParams): Promise<{ data: any, pagination: any }> => {
-    return axios.get("/products/pagination", { params });
+    return axios.get("/api/products/pagination", { params });
   },
 
   fetchProductStats: async (): Promise<IMinMaxFilterData> => {
-    return axios.get("/products/stats");
+    return axios.get("/api/products/stats");
   },
 
   fetchProductById: async (id: string): Promise<IProductDetail> => {
-    return axios.get(`/products/${id}`);
+    return axios.get(`/api/products/${id}`);
   },
 
   fetchProductBySKU: async (sku: string): Promise<IFetchedProduct | null> => {
-    return axios.get(`/products/import-item/${sku}`);
+    return axios.get(`/api/products/import-item/${sku}`);
   },
 
   createProduct: async (payload: ProductPayload): Promise<IProduct> => {
@@ -70,7 +70,7 @@ const productApi = {
       }
     });
 
-    return axios.post("/products", formData);
+    return axios.post("/api/products", formData);
   },
 
   updateProduct: async (id: string, payload: ProductPayload): Promise<IProduct> => {
@@ -91,15 +91,15 @@ const productApi = {
       formData.append(key, value as any);
     });
 
-    return axios.put(`/products/${id}`, formData);
+    return axios.put(`/api/products/${id}`, formData);
   },
 
   updateStatus: async (id: string, status: ProductStatus): Promise<IProduct> => {
-    return axios.patch(`/products/${id}/status`, { status });
+    return axios.patch(`/api/products/${id}/status`, { status });
   },
 
   deleteProduct: async (id: string) => {
-    return axios.delete(`/products/${id}`);
+    return axios.delete(`/api/products/${id}`);
   },
 }
 

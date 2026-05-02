@@ -52,6 +52,7 @@ export default function BrandsFilter({ maxTotal }: { maxTotal: number }) {
 
   return (
     <>
+      {/**
       <ValueRangePicker
         placeholder="Total Products"
         label="Total Products Range"
@@ -61,7 +62,7 @@ export default function BrandsFilter({ maxTotal }: { maxTotal: number }) {
         value={totalProductRange}
         handleApply={handleTotalProductChange}
       />
-
+      */}
       <Select value={status} onValueChange={(value) => handleStatusChange(value)}>
         <SelectTrigger size="sm" className="w-full sm:w-30">
           <SelectValue placeholder="Status" />

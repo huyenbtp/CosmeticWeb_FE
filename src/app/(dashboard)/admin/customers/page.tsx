@@ -27,7 +27,7 @@ export default function CustomersManagement() {
   const searchQuery = searchParams.get("q") || "";
   const is_active = searchParams.get("is_active") || "";
 
-  const fetchStaffs = async () => {
+  const fetchCustomers = async () => {
     setLoading(true);
 
     try {
@@ -51,7 +51,7 @@ export default function CustomersManagement() {
   };
 
   useEffect(() => {
-    fetchStaffs();
+    fetchCustomers();
   }, [page, limit, searchQuery, is_active]);
 
   return (
