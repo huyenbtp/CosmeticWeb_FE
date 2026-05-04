@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 
 export default async function HomePage() {
   const cookieStore = await cookies();
-  const token = cookieStore.get("auth_token")?.value;
+  const token = cookieStore.get("access_token")?.value;
   const role = cookieStore.get("auth_role")?.value;
 
   if (!token) {

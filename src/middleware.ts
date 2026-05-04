@@ -9,7 +9,7 @@ const roleRoutes = {
 };
 
 export function middleware(req: NextRequest) {
-  const token = req.cookies.get("auth_token")?.value;
+  const token = req.cookies.get("access_token")?.value;
   const role = req.cookies.get("auth_role")?.value;
 
   const { pathname } = req.nextUrl;

@@ -1,7 +1,8 @@
 "use client";
 
 export function clearAuth() {
-  document.cookie = `auth_token=; Max-Age=0; path=/`;
+  document.cookie = `access_token=; Max-Age=0; path=/`;
+  document.cookie = `refresh_token=; Max-Age=0; path=/`;
   document.cookie = `auth_role=; Max-Age=0; path=/`;
 }
 
@@ -11,7 +12,7 @@ export function getCookie(name: string): string | null {
 }
 
 export function isLoggedIn(): boolean {
-  return !!getCookie("auth_token");
+  return !!getCookie("access_token");
 }
 
 export function getRole(): string | null {

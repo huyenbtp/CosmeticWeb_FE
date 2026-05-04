@@ -40,7 +40,7 @@ export default function LoginPage() {
         }
       };
 
-      router.push(`/${link}/dashboard`);
+      router.push(`/${link(user.role as UserRole)}/dashboard`);
     } catch (error: any) {
       console.error("Login failed:", error);
     } finally {
@@ -65,7 +65,7 @@ export default function LoginPage() {
         <CardContent className="px-8 py-4 flex flex-col gap-4">
           <h1 className="text-2xl font-bold text-center mb-4">Login to your account</h1>
           <input
-            type="email"
+            type="text"
             placeholder="Email"
             className="border p-2 pl-4 rounded-md"
             value={email}

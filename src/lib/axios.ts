@@ -6,6 +6,14 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
+let isRefreshing = false;
+let queue: any[] = [];
+
+const processQueue = () => {
+  queue.forEach((cb) => cb());
+  queue = [];
+};
+
 /**
  * Request interceptor
  * - KHÔNG cần gắn Authorization
@@ -24,20 +32,48 @@ axiosInstance.interceptors.request.use(
  */
 axiosInstance.interceptors.response.use(
   (response) => response.data, // chỉ trả data
-  (error) => {
+  async (error) => {
     const status = error.response?.status;
+
     const message =
       error.response?.data?.message || error.message || "API Error";
 
     console.error("API Error:", message);
 
     // Token hết hạn / không hợp lệ
-    if (status === 401 && typeof window !== "undefined") {
-      // clear cookie phía client (optional)
-      document.cookie = "auth_token=; Max-Age=0; path=/";
-      document.cookie = "auth_role=; Max-Age=0; path=/";
+    const originalRequest = error.config;
 
-      window.location.href = "/login";
+    if (status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      if (isRefreshing) {
+        return new Promise((resolve) => {
+          queue.push(() => resolve(axiosInstance(originalRequest)));
+        });
+      }
+
+      isRefreshing = true;
+
+      try {
+        await axios.post(
+          "http://localhost:5000/auth/refresh",
+          {},
+          { withCredentials: true }
+        );
+
+        processQueue();
+        return axiosInstance(originalRequest);
+      } catch (err) {
+        // clear cookie phía client (optional)
+        document.cookie = "access_token=; Max-Age=0; path=/";
+        document.cookie = "refresh_token=; Max-Age=0; path=/";
+        document.cookie = "auth_role=; Max-Age=0; path=/";
+
+        window.location.href = "/login";
+        return Promise.reject(err);
+      } finally {
+        isRefreshing = false;
+      }
     }
 
     return Promise.reject(error);
