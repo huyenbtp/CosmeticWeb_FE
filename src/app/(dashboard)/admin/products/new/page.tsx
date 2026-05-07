@@ -2,17 +2,21 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IAddEditProduct, IFetchedBrand, IFetchedCategory, } from "@/interfaces/product.interface";
+import { IAddEditProduct, IFetchedBrand, IFetchedCategory, IFetchedSkinType, IFetchedTag, } from "@/interfaces/product.interface";
 import ProductForm from "@/components/layout/form/ProductForm";
 import brandApi from "@/lib/api/brand.api";
 import categoryApi from "@/lib/api/category.api";
 import productApi from "@/lib/api/product.api";
 import { ImageState } from "@/components/layout/ImageUploader";
+import skinTypeApi from "@/lib/api/skinType.api";
+import tagApi from "@/lib/api/tag.api";
 
 export default function NewProduct() {
   const router = useRouter();
   const [categoryList, setCategoryList] = useState<IFetchedCategory[]>([]);
   const [brandList, setBrandList] = useState<IFetchedBrand[]>([]);
+  const [skinTypeList, setSkinTypeList] = useState<IFetchedSkinType[]>([]);
+  const [tagList, setTagList] = useState<IFetchedTag[]>([]);
   const [loading, setLoading] = useState(false);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
 
@@ -36,10 +40,32 @@ export default function NewProduct() {
 
     }
   };
+  const fetchAllSkinTypes = async () => {
+    try {
+      const res = await skinTypeApi.fetchAllSkinTypes();
+      setSkinTypeList(res);
+    } catch (error) {
+      console.error("Fetch skin types failed:", error);
+    } finally {
+
+    }
+  };
+  const fetchAllTags = async () => {
+    try {
+      const res = await tagApi.fetchAllTags();
+      setTagList(res);
+    } catch (error) {
+      console.error("Fetch tags failed:", error);
+    } finally {
+
+    }
+  };
 
   useEffect(() => {
     fetchAllBrands();
     fetchAllCategories();
+    fetchAllSkinTypes();
+    fetchAllTags();
 
   }, []);
 
@@ -91,6 +117,8 @@ export default function NewProduct() {
       onSaveAndPublish={(data, file, state) => { handleSaveAndPublish(data, file, state) }}
       categoryList={categoryList}
       brandList={brandList}
+      skinTypeList={skinTypeList}
+      tagList={tagList}
     />
   );
 }

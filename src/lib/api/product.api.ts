@@ -30,6 +30,8 @@ export interface ProductPayload {
   name: string;
   category_id: string;
   brand_id: string;
+  skinTypeIds: string[];
+  tagIds: string[];
   selling_price: number;
   description?: string;
   status?: ProductStatus;
@@ -66,10 +68,22 @@ const productApi = {
       if (key === "image" && value instanceof File) {
         formData.append("image", value);
       } else {
+        if (key === "skinTypeIds" || key === "tagIds")
+          return;
+
         formData.append(key, value as any);
       }
     });
 
+    payload.skinTypeIds.forEach(id => {
+      formData.append("skinTypeIds", id);
+    });
+
+    payload.tagIds.forEach(id => {
+      formData.append("tagIds", id);
+    });
+
+    console.log("tag: " + formData.getAll("tagIds"));
     return axios.post("/api/products", formData);
   },
 
@@ -88,7 +102,18 @@ const productApi = {
         return;
       }
 
+      if (key === "skinTypeIds" || key === "tagIds")
+        return;
+
       formData.append(key, value as any);
+    });
+
+    payload.skinTypeIds.forEach(id => {
+      formData.append("skinTypeIds", id);
+    });
+
+    payload.tagIds.forEach(id => {
+      formData.append("tagIds", id);
     });
 
     return axios.put(`/api/products/${id}`, formData);

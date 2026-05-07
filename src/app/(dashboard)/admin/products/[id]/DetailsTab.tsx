@@ -4,6 +4,7 @@ import { ImageWithFallback } from "@/components/layout/ImageWithFallback";
 import { IProductDetail } from "@/interfaces/product.interface";
 import { getProductStatusBadge } from "../ProductsFilter";
 import dayjs from "dayjs";
+import { CircleX } from "lucide-react";
 
 export default function DetailsTab({
   product,
@@ -56,6 +57,32 @@ export default function DetailsTab({
               <p className="text-sm text-muted-foreground mt-2">
                 {product.description}
               </p>
+            </div>
+          }
+
+          {product.skinTypes.length > 0 &&
+            <div>
+              <Label>Skin Types</Label>
+                <div className="flex flex-row flex-wrap gap-2 mt-3">
+                  {product.skinTypes.map(item => (
+                    <div key={item._id} className="px-2 py-1 bg-secondary rounded-lg border">
+                      <p className="text-xs text-primary">{item.name}</p>
+                    </div>
+                  ))}
+                </div>
+            </div>
+          }
+
+          {product.tags.length > 0 &&
+            <div>
+              <Label>Tags</Label>
+                <div className="flex flex-row flex-wrap gap-2 mt-3">
+                  {product.tags.map(item => (
+                    <div key={item._id} className="px-2 py-1 bg-secondary rounded-lg border">
+                      <p className="text-xs text-primary">{item.name}</p>
+                    </div>
+                  ))}
+                </div>
             </div>
           }
         </CardContent>

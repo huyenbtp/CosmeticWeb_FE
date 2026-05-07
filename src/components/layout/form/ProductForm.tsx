@@ -1,19 +1,25 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import ImageUploader, { ImageState } from "@/components/layout/ImageUploader";
-import { IAddEditProduct, IFetchedBrand, IFetchedCategory } from "@/interfaces/product.interface";
+import { IAddEditProduct, IFetchedBrand, IFetchedCategory, IFetchedSkinType, IFetchedTag } from "@/interfaces/product.interface";
 import Combobox from "../Combobox";
+import MultiSelectCombobox from "../MultiSelectCombobox";
+import { ChevronDown, ChevronUp, CircleX } from "lucide-react";
 
 const NullProduct: IAddEditProduct = {
   sku: "",
   name: "",
   category: { _id: "", name: "" },
   brand: { _id: "", name: "" },
+  skinTypeIds: [],
+  tagIds: [],
   selling_price: 0,
   description: "",
   image: "",
@@ -55,6 +61,8 @@ interface ProductFormProps {
   onSaveAndPublish: (data: IAddEditProduct, file: File | null, imageState: ImageState) => void;
   categoryList: IFetchedCategory[];
   brandList: IFetchedBrand[];
+  skinTypeList: IFetchedSkinType[];
+  tagList: IFetchedTag[];
 }
 
 export default function ProductForm({
@@ -65,11 +73,18 @@ export default function ProductForm({
   onSaveAndPublish,
   categoryList,
   brandList,
+  skinTypeList,
+  tagList,
 }: ProductFormProps) {
   const [data, setData] = useState(initialData ?? NullProduct);
   const [file, setFile] = useState<File | null>(null);
   const [imageState, setImageState] = useState<ImageState>("keep");
 
+  const [skinTypeShow, setSkinTypeShow] = useState(false);
+  const [selectedSkinTypeIds, setSelectedSkinTypeIds] = useState<string[]>([]);
+  const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
+
+  const selectedTags = tagList.filter(item => selectedTagIds.includes(item._id));
 
   const handleGenerate = () => {
     if (data.category._id === "" || data.brand._id === "") return;
@@ -78,8 +93,20 @@ export default function ProductForm({
   }
 
   useEffect(() => {
-    if (initialData) setData(initialData)
+    if (initialData) {
+      setData(initialData)
+      setSelectedSkinTypeIds(initialData.skinTypeIds)
+      setSelectedTagIds(initialData.tagIds)
+    }
   }, [initialData])
+
+  useEffect(() => {
+    setData({ ...data, skinTypeIds: selectedSkinTypeIds })
+  }, [selectedSkinTypeIds])
+
+  useEffect(() => {
+    setData({ ...data, tagIds: selectedTagIds })
+  }, [selectedTagIds])
 
   return (
     <div className="h-full flex flex-col px-8 py-6 space-y-6">
@@ -208,6 +235,77 @@ export default function ProductForm({
             </div>
 
             <div className="space-y-6">
+              <Collapsible open={skinTypeShow} onOpenChange={setSkinTypeShow}>
+                <div className="flex flex-row w-full items-center justify-between mb-2">
+                  <Label
+                    htmlFor="product-skin-types"
+                    className="text-muted-foreground"
+                  >
+                    Skin Types
+                  </Label>
+                  <CollapsibleTrigger>
+                    {skinTypeShow ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                  </CollapsibleTrigger>
+                </div>
+
+                <CollapsibleContent>
+                  {skinTypeList.map((item) => {
+                    const isChecked = selectedSkinTypeIds.includes(item._id);
+                    return (
+                      <div key={item._id} className="flex flex-row items-center gap-4 mb-1">
+                        <Checkbox
+                          checked={isChecked}
+                          onCheckedChange={(value) => {
+                            if (value)
+                              setSelectedSkinTypeIds((prev) => [...prev, item._id])
+                            else
+                              setSelectedSkinTypeIds(selectedSkinTypeIds.filter(id => id !== item._id))
+                          }}
+                        />
+                        <p className="text-sm">
+                          {item.name}
+                        </p>
+                      </div>
+                    )
+                  })}
+                </CollapsibleContent>
+              </Collapsible>
+
+              <div>
+                <div className="flex flex-row w-full items-center justify-between mb-4">
+                  <Label
+                    htmlFor="product-tags"
+                    className={`transition-all text-muted-foreground`}
+                  >
+                    Tags
+                  </Label>
+                  <MultiSelectCombobox
+                    items={tagList}
+                    selectedValueList={selectedTagIds}
+                    onSelectValue={(value) => {
+                      if (!selectedTagIds.includes(value))
+                        setSelectedTagIds((prev) => [...prev, value])
+                      else setSelectedTagIds(selectedTagIds.filter(id => id !== value))
+                    }}
+                    getLabel={(c) => c.name}
+                    getValue={(c) => c._id}
+                    emptyText="No tag found."
+                  />
+                </div>
+                <div className="flex flex-row flex-wrap gap-2">
+                  {selectedTags.map(item => (
+                    <div key={item._id} className="relative px-2 py-1 bg-secondary rounded-lg border">
+                      <p className="text-xs text-primary">{item.name}</p>
+                      <CircleX
+                        size={14}
+                        className="absolute top-[-4] right-[-4] text-primary"
+                        onClick={() => setSelectedTagIds(selectedTagIds.filter(id => id !== item._id))}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <div>
                 <Label
                   htmlFor="product-description"
@@ -232,7 +330,7 @@ export default function ProductForm({
                     ${data.selling_price === 0 ? "opacity-0 h-0 -translate-y-2" : "opacity-100 mb-2"}
                   `}
                 >
-                  Selling Price
+                  Selling Prices
                 </Label>
                 <Input
                   id="product-selling-price"

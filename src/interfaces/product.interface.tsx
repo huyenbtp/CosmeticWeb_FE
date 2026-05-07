@@ -37,6 +37,8 @@ export interface IProductDetail {
   name: string;
   category: { _id: string; name: string }
   brand: { _id: string; name: string }
+  skinTypes: { _id: string; name: string }[];
+  tags: { _id: string; name: string }[];
   selling_price: number;
   import_price: number;
   description: string;
@@ -55,6 +57,8 @@ export interface IAddEditProduct {
   name: string;
   category: { _id: string; name: string }
   brand: { _id: string; name: string }
+  skinTypeIds: string[];
+  tagIds: string[];
   selling_price: number;
   description: string;
   status: string;
@@ -68,6 +72,16 @@ export interface IFetchedCategory {
 }
 
 export interface IFetchedBrand {
+  _id: string;
+  name: string;
+}
+
+export interface IFetchedSkinType{
+  _id: string;
+  name: string;
+}
+
+export interface IFetchedTag{
   _id: string;
   name: string;
 }

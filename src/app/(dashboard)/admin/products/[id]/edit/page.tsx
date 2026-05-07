@@ -2,13 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { IAddEditProduct, IFetchedBrand, IFetchedCategory, } from "@/interfaces/product.interface";
+import { IAddEditProduct, IFetchedBrand, IFetchedCategory, IFetchedSkinType, IFetchedTag, } from "@/interfaces/product.interface";
 import ProductForm from "@/components/layout/form/ProductForm";
 import brandApi from "@/lib/api/brand.api";
 import categoryApi from "@/lib/api/category.api";
 import productApi from "@/lib/api/product.api";
 import { Spinner } from "@/components/ui/spinner";
 import { ImageState } from "@/components/layout/ImageUploader";
+import skinTypeApi from "@/lib/api/skinType.api";
+import tagApi from "@/lib/api/tag.api";
 
 export default function EditProduct() {
   const router = useRouter();
@@ -16,6 +18,8 @@ export default function EditProduct() {
   const [data, setData] = useState<IAddEditProduct>();
   const [categoryList, setCategoryList] = useState<IFetchedCategory[]>([]);
   const [brandList, setBrandList] = useState<IFetchedBrand[]>([]);
+    const [skinTypeList, setSkinTypeList] = useState<IFetchedSkinType[]>([]);
+    const [tagList, setTagList] = useState<IFetchedTag[]>([]);
   const [loading, setLoading] = useState(false);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
 
@@ -23,7 +27,11 @@ export default function EditProduct() {
     setLoading(true)
     try {
       const res = await productApi.fetchProductById(id);
-      setData(res);
+      setData({
+        ...res,
+        skinTypeIds: res.skinTypes.map(item => item._id),
+        tagIds: res.tags.map(item => item._id),
+      });
       console.log(res)
     } catch (error) {
       console.error("Fetch product failed:", error);
@@ -52,11 +60,33 @@ export default function EditProduct() {
 
     }
   };
+  const fetchAllSkinTypes = async () => {
+    try {
+      const res = await skinTypeApi.fetchAllSkinTypes();
+      setSkinTypeList(res);
+    } catch (error) {
+      console.error("Fetch skin types failed:", error);
+    } finally {
+
+    }
+  };
+  const fetchAllTags = async () => {
+    try {
+      const res = await tagApi.fetchAllTags();
+      setTagList(res);
+    } catch (error) {
+      console.error("Fetch tags failed:", error);
+    } finally {
+
+    }
+  };
 
   useEffect(() => {
     fetchProduct();
     fetchAllBrands();
     fetchAllCategories();
+    fetchAllSkinTypes();
+    fetchAllTags();
 
   }, []);
 
@@ -132,6 +162,8 @@ export default function EditProduct() {
       onSaveAndPublish={(data, file, state) => { handleSaveAndPublish(data, file, state) }}
       categoryList={categoryList}
       brandList={brandList}
+      skinTypeList={skinTypeList}
+      tagList={tagList}
     />
   );
 }
