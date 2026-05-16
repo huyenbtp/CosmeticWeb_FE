@@ -3,17 +3,18 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { User } from "lucide-react";
+import { Clock, User } from "lucide-react";
 import { IImportDetail } from "@/interfaces/import.interface";
+import dayjs from "dayjs";
 
 export default function ImportInformation({
   data,
-  onChangeNote,
+  onChangeNotes,
 }: {
   data: IImportDetail;
-  onChangeNote: (note: string) => void;
+  onChangeNotes: (notes: string) => void;
 }) {
-  const [newNote, setNewNote] = useState(data.note);
+  const [newNotes, setNewNotes] = useState(data.notes);
 
   return (
     <>
@@ -22,14 +23,24 @@ export default function ImportInformation({
         <CardHeader>
           <CardTitle className="flex items-center gap-3">
             <User className="w-5 h-5" />
-            Created By
+            Responsible
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex items-center gap-4">
+        <CardContent className="flex flex-col gap-6">
           <div className="space-y-1">
-            <div className="font-medium">{data.staff.full_name}</div>
-            <div className="text-sm text-muted-foreground">Staff code: {data.staff.staff_code}</div>
+            <div className="font-medium">{data.createdStaff.full_name} (Creator)</div>
+            <div className="text-sm text-muted-foreground">Staff code: {data.createdStaff.staff_code}</div>
           </div>
+          {data.confirmedStaff && (
+            <div className="space-y-1">
+              <div className="font-medium">{data.confirmedStaff.full_name} (Confirmer)</div>
+              <div className="text-sm text-muted-foreground">Staff code: {data.confirmedStaff.staff_code}</div>
+              <div className="flex items-center gap-2">
+                <Clock className="w-3 h-3" />
+                <div className="text-sm text-muted-foreground">Confirmed at {dayjs(data.confirmedAt).format("hh:mm, DD/MM/YYYY")}</div>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -39,12 +50,12 @@ export default function ImportInformation({
         </CardHeader>
         <CardContent className="space-y-4">
           <Textarea
-            value={newNote}
-            onChange={(e) => { setNewNote(e.target.value) }}
+            value={newNotes}
+            onChange={(e) => { setNewNotes(e.target.value) }}
           />
           <Button
-            onClick={() => { onChangeNote(newNote) }}
-            disabled={newNote === data.note}
+            onClick={() => { onChangeNotes(newNotes) }}
+            disabled={newNotes === data.notes}
             className="w-full"
           >
             Update

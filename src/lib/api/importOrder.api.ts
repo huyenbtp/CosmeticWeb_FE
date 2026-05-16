@@ -2,7 +2,7 @@ import { IMinMaxFilterData, IImport, IImportDetail } from "@/interfaces/import.i
 import axios from "@/lib/axios";
 
 export type ImportKey = "import_code" | "staff_name" | "staff_code";
-export type ImportStatus = "draft" | "cancelled";
+export type ImportStatus = "draft" | "confirmed";
 export type ImportType = "purchase" | "customer_return";
 
 export interface FetchImportsParams {
@@ -47,8 +47,20 @@ const importApi = {
     return axios.post("/api/product-imports", payload);
   },
 
-  updateNote: async (id: string, note: string): Promise<IImport> => {
-    return axios.patch(`/api/product-imports/${id}/note`, { note });
+  updateImport: async (id: string, payload: ImportPayload): Promise<IImport> => {
+    return axios.put(`/api/product-imports/${id}`, payload);
+  },
+
+  confirmImport: async (id: string): Promise<{ newBatchesCount: number }> => {
+    return axios.post(`/api/product-imports/${id}/confirm`);
+  },
+
+  deleteImport: async (id: string): Promise<boolean> => {
+    return axios.delete(`/api/product-imports/${id}`);
+  },
+
+  updateNotes: async (id: string, notes: string): Promise<IImport> => {
+    return axios.patch(`/api/product-imports/${id}/notes`, { notes });
   },
 }
 

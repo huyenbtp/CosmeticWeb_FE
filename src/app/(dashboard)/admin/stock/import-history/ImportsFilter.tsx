@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { updateQueryParams } from "@/lib/utils";
+import { capitalize, capitalizeWords, cn, updateQueryParams } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DateRangePicker } from "@/components/layout/DateRangePicker";
@@ -10,25 +10,51 @@ import { IMinMaxFilterData } from "@/interfaces/import.interface";
 import { ImportStatus, ImportType } from "@/lib/api/importOrder.api";
 import dayjs from "dayjs";
 
-export function getProductImportStatusBadge(status: string) {
+export function getProductImportStatusBadge(status: string, size: "xs" | "sm" = "xs") {
+  const style = `text-${size}`;
+
   if (status === "draft") {
-    return <Badge variant="outline">Draft</Badge>
+    return (
+      <Badge variant="outline" className={style}>
+        {capitalizeWords(status)}
+      </Badge>
+    )
   } else if (status === "confirmed") {
-    return <Badge className="bg-success1 text-success1-foreground">Confirmed</Badge>
-  } else if (status === "cancelled") {
-    return <Badge className="bg-error1 text-error1-foreground">Cancelled</Badge>
+    return (
+      <Badge className={cn("bg-success1 text-success1-foreground", style)}>
+        {capitalizeWords(status)}
+      </Badge>
+    )
   } else {
-    return <Badge variant="secondary">{status}</Badge>
+    return (
+      <Badge variant="secondary" className={style}>
+        {capitalizeWords(status)}
+      </Badge>
+    )
   }
 };
 
-export function getProductImportTypeBadge(type: string) {
+export function getProductImportTypeBadge(type: string, size: "xs" | "sm" = "xs") {
+  const style = `text-${size}`;
+
   if (type === "purchase") {
-    return <Badge className="bg-success1 text-success1-foreground">Purchase</Badge>
+    return (
+      <Badge className={cn("bg-warning1 text-warning1-foreground", style)}>
+        {capitalizeWords(type)}
+      </Badge>
+    )
   } else if (type === "customer_return") {
-    return <Badge className="bg-error1 text-error1-foreground">Customer return</Badge>
+    return (
+      <Badge className={cn("bg-error1 text-error1-foreground", style)}>
+        Customer return
+      </Badge>
+    )
   } else {
-    return <Badge variant="secondary">{type}</Badge>
+    return (
+      <Badge variant="secondary" className={style}>
+        {capitalizeWords(type)}
+      </Badge>
+    )
   }
 };
 
@@ -104,19 +130,19 @@ export default function ImportsFilter({
       />
 
       <Select value={status} onValueChange={(value: ImportStatus | "all") => handleStatusChange(value)}>
-        <SelectTrigger size="sm" className="w-full sm:w-30">
+        <SelectTrigger size="sm" className="w-full sm:w-34">
           <SelectValue placeholder="Status" />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All status</SelectItem>
-          {["draft", "confirmed", "cancelled"].map(value => (
+          {["draft", "confirmed"].map(value => (
             <SelectItem key={value} value={value}>{getProductImportStatusBadge(value)}</SelectItem>
           ))}
         </SelectContent>
       </Select>
 
       <Select value={type} onValueChange={(value: ImportType | "all") => handleTypeChange(value)}>
-        <SelectTrigger size="sm" className="w-full sm:w-30">
+        <SelectTrigger size="sm" className="w-full sm:w-42">
           <SelectValue placeholder="Type" />
         </SelectTrigger>
         <SelectContent>

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Package, Save } from "lucide-react";
 import dayjs from "dayjs";
-import { IAddEditImport } from "@/interfaces/import.interface";
+import { IAddEditImport, IImportDetail } from "@/interfaces/import.interface";
 import { IImportItemUI } from "@/interfaces/importItem.interface";
 import AddEditImportItemDialog from "./AddImportItemDialog";
 import { Textarea } from "@/components/ui/textarea";
@@ -27,18 +27,39 @@ const mockStaff: IStaffCreated = {
 }
 
 interface ImportFormProps {
-  loading: boolean;
+  mode: "create" | "edit";
+  loading?: boolean;
+  initialData?: IImportDetail;
   onSubmit: (data: IAddEditImport) => void;
 }
 
 export default function ImportOrderForm({
-  loading,
+  mode,
+  loading = false,
+  initialData,
   onSubmit
 }: ImportFormProps) {
-  const creator = JSON.parse(localStorage.getItem("auth_profile") || "{}");
+  const [creator, setCreator] = useState(JSON.parse(localStorage.getItem("auth_profile") || "{}"));
   const [items, setItems] = useState<IImportItemUI[]>([]);
   const [isAddItemOpen, setIsAddItemOpen] = useState(false);
   const [notes, setNotes] = useState("");
+
+  useEffect(() => {
+    if (initialData) {
+      setCreator(initialData.createdStaff)
+      setItems(initialData.items.map(item => {
+        const { _id, import_id, ...rest } = item;
+        return (
+          {
+            product_id: item.product._id,
+            ...rest,
+          }
+        )
+      }))
+      setNotes(initialData.notes)
+    }
+
+  }, [initialData]);
 
   const handleAddItem = (
     selectedProduct: any,
@@ -159,10 +180,10 @@ export default function ImportOrderForm({
       <div className="flex items-center justify-between">
         <div className="flex-1 mr-10">
           <h1 className="text-2xl font-semibold">
-            New Import Order
+            {mode === "create" ? "New Import Order" : "Edit Import Order"}
           </h1>
           <p className="text-muted-foreground">
-            Fill in the details below to create a new import order
+            Fill in the details below to {mode === "create" ? "create a new" : "edit"} import order
           </p>
         </div>
 
@@ -187,7 +208,7 @@ export default function ImportOrderForm({
             </div>
             <div className="flex justify-between">
               <span>Created date:</span>
-              <span className="font-medium">{dayjs(new Date()).format("DD/MM/YYYY")}</span>
+              <span className="font-medium">{dayjs(initialData ? initialData.createdAt : new Date()).format("DD/MM/YYYY")}</span>
             </div>
           </CardContent>
         </Card>
@@ -208,18 +229,18 @@ export default function ImportOrderForm({
       </div>
 
       <div className="flex-1 grid grid-cols-1">
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>Import Items</CardTitle>
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>Import Items</CardTitle>
 
-            <AddEditImportItemDialog
-              open={isAddItemOpen}
-              setOpen={setIsAddItemOpen}
-              handleAddItem={handleAddItem}
-            />
-          </div>
-        </CardHeader>
+              <AddEditImportItemDialog
+                open={isAddItemOpen}
+                setOpen={setIsAddItemOpen}
+                handleAddItem={handleAddItem}
+              />
+            </div>
+          </CardHeader>
 
           <CardContent>
             {items.length === 0 ? (
@@ -258,7 +279,7 @@ export default function ImportOrderForm({
               </>
             )}
           </CardContent>
-      </Card>
+        </Card>
       </div>
     </div>
   );

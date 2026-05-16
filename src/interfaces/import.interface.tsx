@@ -27,7 +27,12 @@ export interface IMinMaxFilterData {
 export interface IImportDetail {
   _id: string;
   import_code: string;
-  staff: {
+  createdStaff: {
+    _id: string;
+    staff_code: string;
+    full_name: string;
+  };
+  confirmedStaff: {
     _id: string;
     staff_code: string;
     full_name: string;
@@ -36,7 +41,10 @@ export interface IImportDetail {
   products_updated: number;
   items_imported: number;
   total_amount: number;
-  note: string;
+  status: string;
+  type: string;
+  notes: string;
+  confirmedAt: string;
   createdAt: string;
   updatedAt: string;
 }

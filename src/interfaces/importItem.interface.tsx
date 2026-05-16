@@ -7,8 +7,11 @@ export interface IImportItem {
     name: string;
     image: string;
   }
+  batch_code: string;
   quantity: number;
   unit_price: number;
+  mfg_date: string;
+  exp_date: string;
 }
 
 export interface IAddEditImportItem {
