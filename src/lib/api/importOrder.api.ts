@@ -2,6 +2,8 @@ import { IMinMaxFilterData, IImport, IImportDetail } from "@/interfaces/import.i
 import axios from "@/lib/axios";
 
 export type ImportKey = "import_code" | "staff_name" | "staff_code";
+export type ImportStatus = "draft" | "cancelled";
+export type ImportType = "purchase" | "customer_return";
 
 export interface FetchImportsParams {
   page?: number;
@@ -12,36 +14,41 @@ export interface FetchImportsParams {
   toDate?: string;
   minTotal?: number;
   maxTotal?: number;
+  status?: ImportStatus;
+  type?: ImportType;
 }
 
 export interface ImportPayload {
   items: {
     product_id: string;
+    batch_code: string;
     quantity: number;
     unit_price: number;
+    mfg_date: string;
+    exp_date: string;
   }[];
-  note: string;
+  notes: string;
 }
 
 const importApi = {
   fetchImports: async (params: FetchImportsParams): Promise<{ data: any, pagination: any }> => {
-    return axios.get("/product-imports", { params });
+    return axios.get("/api/product-imports", { params });
   },
 
   fetchImportStats: async (): Promise<IMinMaxFilterData> => {
-    return axios.get("/product-imports/stats");
+    return axios.get("/api/product-imports/stats");
   },
 
   fetchImportById: async (id: string): Promise<IImportDetail> => {
-    return axios.get(`/product-imports/${id}`);
+    return axios.get(`/api/product-imports/${id}`);
   },
 
   createImport: async (payload: ImportPayload): Promise<IImport> => {
-    return axios.post("/product-imports", payload);
+    return axios.post("/api/product-imports", payload);
   },
 
   updateNote: async (id: string, note: string): Promise<IImport> => {
-    return axios.patch(`/product-imports/${id}/note`, { note });
+    return axios.patch(`/api/product-imports/${id}/note`, { note });
   },
 }
 

@@ -11,7 +11,7 @@ import ImportItemsTable from "./ImportItemsTable";
 
 const NullImport: IAddEditImport = {
   items: [],
-  note: "",
+  notes: "",
 };
 
 export interface IStaffCreated {
@@ -35,12 +35,19 @@ export default function ImportOrderForm({
   loading,
   onSubmit
 }: ImportFormProps) {
-  const creator = JSON.parse(localStorage.getItem("auth_user") || "{}");
+  const creator = JSON.parse(localStorage.getItem("auth_profile") || "{}");
   const [items, setItems] = useState<IImportItemUI[]>([]);
   const [isAddItemOpen, setIsAddItemOpen] = useState(false);
   const [notes, setNotes] = useState("");
 
-  const handleAddItem = (selectedProduct: any, quantity: number, unitCost: number) => {
+  const handleAddItem = (
+    selectedProduct: any,
+    batch_code: string,
+    quantity: number,
+    unitCost: number,
+    mfg_date: string,
+    exp_date: string
+  ) => {
     const existingItem = items.find(item => item.product_id === selectedProduct._id);
 
     if (existingItem) {
@@ -58,14 +65,29 @@ export default function ImportOrderForm({
         ...prev,
         {
           product_id: selectedProduct._id,
+          batch_code,
           quantity,
           unit_price: unitCost,
-          product: selectedProduct
+          mfg_date,
+          exp_date,
+          product: selectedProduct,
         }
       ]);
     }
 
     setIsAddItemOpen(false);
+  };
+
+  const handleUpdateBatchCode = (id: string, code: string) => {
+    setItems(items.map(item => {
+      if (item.product_id === id) {
+        return {
+          ...item,
+          batch_code: code,
+        };
+      }
+      return item;
+    }));
   };
 
   const handleUpdateQuantity = (id: string, newQuantity: number) => {
@@ -92,6 +114,30 @@ export default function ImportOrderForm({
     }));
   };
 
+  const handleUpdateMfgDate = (id: string, newMfg: string) => {
+    setItems(items.map(item => {
+      if (item.product_id === id) {
+        return {
+          ...item,
+          mfg_date: newMfg,
+        };
+      }
+      return item;
+    }));
+  };
+
+  const handleUpdateExpDate = (id: string, newExp: string) => {
+    setItems(items.map(item => {
+      if (item.product_id === id) {
+        return {
+          ...item,
+          exp_date: newExp,
+        };
+      }
+      return item;
+    }));
+  };
+
   const handleRemoveItem = (product_id: string) => {
     setItems(items.filter(item => item.product_id !== product_id));
   };
@@ -102,7 +148,7 @@ export default function ImportOrderForm({
   const handleSubmit = () => {
     const payload: IAddEditImport = {
       items,
-      note: notes,
+      notes,
     };
 
     onSubmit(payload);
@@ -125,7 +171,7 @@ export default function ImportOrderForm({
           onClick={handleSubmit}
         >
           <Save className="w-4 h-4 mr-2" />
-          Add New Import Order
+          Save as Draft
         </Button>
       </div>
 
@@ -161,6 +207,7 @@ export default function ImportOrderForm({
         </Card>
       </div>
 
+      <div className="flex-1 grid grid-cols-1">
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -174,41 +221,45 @@ export default function ImportOrderForm({
           </div>
         </CardHeader>
 
-        <CardContent>
-          {items.length === 0 ? (
-            <div className="text-center pt-12 pb-24">
-              <Package className="w-24 h-24 p-5 border bg-accent/30 text-gray-300 mx-auto mb-4 rounded-full" />
-              <p className="text-muted-foreground">No items added yet</p>
-              <p className="text-sm text-gray-400 mt-1">Click "Add Item" to start building your import order</p>
-            </div>
-          ) : (
-            <>
-              <ImportItemsTable
-                data={items}
-                handleUpdateQuantity={handleUpdateQuantity}
-                handleUpdateUnitCost={handleUpdateUnitCost}
-                handleRemoveItem={handleRemoveItem}
-              />
-
-              <div className="space-y-2 mt-2 py-4 border-t">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Total Products Updated:</span>
-                  <span>{items.length}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Total Items Imported:</span>
-                  <span>{totalItems}</span>
-                </div>
-
-                <div className="flex justify-between font-bold text-xl pt-4 border-t">
-                  <span>Total Cost</span>
-                  <span>{totalAmount.toLocaleString()} đ</span>
-                </div>
+          <CardContent>
+            {items.length === 0 ? (
+              <div className="text-center pt-12 pb-24">
+                <Package className="w-24 h-24 p-5 border bg-accent/30 text-gray-300 mx-auto mb-4 rounded-full" />
+                <p className="text-muted-foreground">No items added yet</p>
+                <p className="text-sm text-gray-400 mt-1">Click "Add Item" to start building your import order</p>
               </div>
-            </>
-          )}
-        </CardContent>
+            ) : (
+              <>
+                <ImportItemsTable
+                  data={items}
+                  handleUpdateBatchCode={handleUpdateBatchCode}
+                  handleUpdateQuantity={handleUpdateQuantity}
+                  handleUpdateUnitCost={handleUpdateUnitCost}
+                  handleUpdateMfgDate={handleUpdateMfgDate}
+                  handleUpdateExpDate={handleUpdateExpDate}
+                  handleRemoveItem={handleRemoveItem}
+                />
+
+                <div className="space-y-2 mt-2 py-4 border-t">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Total Products Updated:</span>
+                    <span>{items.length}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Total Items Imported:</span>
+                    <span>{totalItems}</span>
+                  </div>
+
+                  <div className="flex justify-between font-bold text-xl pt-4 border-t">
+                    <span>Total Cost</span>
+                    <span>{totalAmount.toLocaleString()} đ</span>
+                  </div>
+                </div>
+              </>
+            )}
+          </CardContent>
       </Card>
+      </div>
     </div>
   );
 }

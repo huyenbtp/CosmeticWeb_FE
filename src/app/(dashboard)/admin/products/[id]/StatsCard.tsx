@@ -14,7 +14,7 @@ export default function StatsCard({
           <div className="flex items-center gap-5">
             <Package className="w-6 h-6 text-primary" />
             <div>
-              <div className="text-2xl font-bold">{product.stock_quantity}</div>
+              <div className="text-2xl font-bold">{product.total_stock}</div>
               <div className="text-muted-foreground">Total Stock</div>
             </div>
           </div>

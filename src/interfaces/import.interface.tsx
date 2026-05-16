@@ -12,6 +12,8 @@ export interface IImport {
   products_updated: number;
   items_imported: number;
   total_amount: number;
+  status: string;
+  type: string;
   createdAt: string;
 }
 
@@ -41,5 +43,5 @@ export interface IImportDetail {
 
 export interface IAddEditImport {
   items: IAddEditImportItem[];
-  note: string;
+  notes: string;
 }

@@ -62,8 +62,8 @@ export default function ProductsTable({
             </TableCell>
 
             <TableCell className="w-1/14 ">
-              {item.stock_quantity > 0
-                ? <span className="text-muted-foreground">{item.stock_quantity}</span>
+              {item.total_stock > 0
+                ? <span className="text-muted-foreground">{item.total_stock}</span>
                 : <span className="text-muted-foreground/60">Out of stock</span>}
             </TableCell>
 

@@ -7,6 +7,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { ChevronRight, Plus } from "lucide-react";
 import { ImageWithFallback } from "@/components/layout/ImageWithFallback";
 import productApi from "@/lib/api/product.api";
+import dayjs from "dayjs";
 
 export interface IFetchedProduct {
   _id: string;
@@ -36,18 +37,30 @@ const mockProducts: IFetchedProduct[] = [
   },
 ];
 
+interface DialogProps {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  handleAddItem: (
+    selectedProduct: any,
+    batch_code: string,
+    quantity: number,
+    unitCost: number,
+    mfg_date: string,
+    exp_date: string
+  ) => void;
+}
+
 export default function AddEditImportItemDialog({
   open,
   setOpen,
   handleAddItem,
-}: {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  handleAddItem: (selectedProduct: any, quantity: number, unitCost: number) => void;
-}) {
+}: DialogProps) {
   const [selectedProduct, setSelectedProduct] = useState<IFetchedProduct | null>(null);
+  const [batchCode, setBatchCode] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [unitCost, setUnitCost] = useState(0);
+  const [mfgDate, setMfgDate] = useState("");
+  const [expDate, setExpDate] = useState("");
   const [searchSku, setSearchSku] = useState("");
   const [loading, setLoading] = useState(false);
   const productFound = selectedProduct ? true : false;
@@ -134,7 +147,53 @@ export default function AddEditImportItemDialog({
             )
           }
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-6">
+            <div className="space-y-1 col-span-2">
+              <Label
+                htmlFor="batch"
+                className="text-muted-foreground"
+              >
+                Batch Code
+              </Label>
+              <Input
+                id="batch"
+                value={batchCode}
+                onChange={(e) => setBatchCode(e.target.value)}
+                className="h-12"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label
+                htmlFor="mfg"
+                className="text-muted-foreground"
+              >
+                Manufacturing Date
+              </Label>
+              <Input
+                id="mfg"
+                type="date"
+                value={dayjs(mfgDate).format("YYYY-MM-DD")}
+                onChange={(e) => setMfgDate(e.target.value)}
+                className="h-12"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <Label
+                htmlFor="exp"
+                className="text-muted-foreground"
+              >
+                Expiration Date
+              </Label>
+              <Input
+                id="exp"
+                type="date"
+                value={dayjs(expDate).format("YYYY-MM-DD")}
+                onChange={(e) => setExpDate(e.target.value)}
+                className="h-12"
+              />
+            </div>
+
             <div className="space-y-1">
               <Label
                 htmlFor="item-quantity"
@@ -197,7 +256,7 @@ export default function AddEditImportItemDialog({
             className="flex-1"
             disabled={!selectedProduct || quantity < 1 || unitCost < 0}
             onClick={() => {
-              handleAddItem(selectedProduct, quantity, unitCost);
+              handleAddItem(selectedProduct, batchCode, quantity, unitCost, mfgDate, expDate);
             }}
           >
             Add Item

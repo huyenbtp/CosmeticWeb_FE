@@ -3,7 +3,7 @@ export interface IProduct {
   name: string;
   category: { _id: string; name: string }
   brand: { _id: string; name: string }
-  stock_quantity: number;
+  total_stock: number;
   selling_price: number;
   status: string;
   image: string;
@@ -15,7 +15,7 @@ export interface ICheckoutProduct {
   sku: string;
   category: string;
   brand: string;
-  stock_quantity: number;
+  total_stock: number;
   selling_price: number;
   image: string;
 }
@@ -43,7 +43,9 @@ export interface IProductDetail {
   import_price: number;
   description: string;
   image: string;
-  stock_quantity: number;
+  total_stock: number;
+  reserved_stock: number;
+  available_stock: number;
   status: string;
   createdAt: string;
   updatedAt: string;

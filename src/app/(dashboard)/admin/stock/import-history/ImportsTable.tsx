@@ -7,6 +7,7 @@ import { IImport } from "@/interfaces/import.interface";
 import dayjs from "dayjs";
 import { capitalizeWords } from "@/lib/utils";
 import { Spinner } from "@/components/ui/spinner";
+import { getProductImportStatusBadge, getProductImportTypeBadge } from "./ImportsFilter";
 
 export function getStatusStyle(status: string) {
   if (status === "paid") {
@@ -33,9 +34,10 @@ export default function ImportsTable({
           <TableHead>Import Code</TableHead>
           <TableHead>Created By</TableHead>
           <TableHead>Date</TableHead>
-          <TableHead className="text-center">Products Updated</TableHead>
-          <TableHead className="text-center">Items Imported</TableHead>
+          <TableHead className="text-center">Items</TableHead>
           <TableHead className="text-right pr-4">Total Amount</TableHead>
+          <TableHead className="text-center">Status</TableHead>
+          <TableHead className="text-center">Type</TableHead>
           <TableHead className="text-center">Actions</TableHead>
         </TableRow>
       </TableHeader>
@@ -49,11 +51,11 @@ export default function ImportsTable({
           </TableRow>
         ) : data.length > 0 ? (data.map((item) => (
           <TableRow key={item._id}>
-            <TableCell className="w-20/100 font-medium">
+            <TableCell className="w-14/100 font-medium">
               {item.import_code}
             </TableCell>
 
-            <TableCell className="w-22/100 max-w-80 pr-8" title={item.staff?.full_name}>
+            <TableCell className="w-20/100 max-w-80 pr-8" title={item.staff?.full_name}>
               <div>
                 <div className="font-medium">{item.staff?.full_name}</div>
                 <div className="text-muted-foreground ">S.Code: {item.staff?.staff_code}</div>
@@ -64,16 +66,20 @@ export default function ImportsTable({
               {dayjs(item.createdAt).format("DD/MM/YYYY")}
             </TableCell>
 
-            <TableCell className="w-14/100 text-center text-muted-foreground">
-              {item.products_updated}
-            </TableCell>
-
-            <TableCell className="w-14/100 text-center font-medium">
+            <TableCell className="w-9/100 text-center font-medium">
               {item.items_imported}
             </TableCell>
 
             <TableCell className="w-12/100 text-right font-medium pr-4">
               {item.total_amount.toLocaleString()} đ
+            </TableCell>
+
+            <TableCell className="w-14/100 text-center">
+              {getProductImportStatusBadge(item.status)}
+            </TableCell>
+
+            <TableCell className="w-14/100 text-center">
+              {getProductImportTypeBadge(item.type)}
             </TableCell>
 
             <TableCell className="text-center">

@@ -13,10 +13,10 @@ import ImportsTable from "./ImportsTable";
 import { Pagination } from "@/components/layout/Pagination";
 import { IImport } from "@/interfaces/import.interface";
 import { IMinMaxFilterData } from "@/interfaces/import.interface";
-import importApi, { ImportKey } from "@/lib/api/importOrder.api";
+import importApi, { ImportKey, ImportStatus, ImportType } from "@/lib/api/importOrder.api";
 import { updateQueryParams } from "@/lib/utils";
 
-const mockImports: IImport[] = [
+const mockImports = [
   {
     _id: "IMP-001",
     import_code: "IMP-15112025-093000",
@@ -135,10 +135,12 @@ export default function ImportsManagement() {
   const rawPage = Number(searchParams.get("page"));
   const page = Number.isInteger(rawPage) && rawPage > 0 ? rawPage : 1;
   const searchQuery = searchParams.get("q") || "";
-  const [searchBy, setSearchBy] = useState<ImportKey>("import_code");
+  //const [searchBy, setSearchBy] = useState<ImportKey>("import_code");
   const fromDate = searchParams.get("fromDate") || "";
   const toDate = searchParams.get("toDate") || "";
   const [totalRange, setTotalRange] = useState<number[]>([0, 0]);
+  const status = searchParams.get("status") || "";
+  const type = searchParams.get("type") || "";
 
   useEffect(() => {
     const initFilters = async () => {
@@ -164,11 +166,12 @@ export default function ImportsManagement() {
         page,
         limit,
         q: searchQuery || undefined,
-        by: searchBy || "import_code",
         fromDate: fromDate || undefined,
         toDate: toDate,
         minTotal: totalRange[0] || undefined,
         maxTotal: totalRange[1],
+        status: status as ImportStatus || undefined,
+        type: type as ImportType || undefined,
       });
       setData(res.data);
       setTotal(res.pagination?.total ?? 0);
@@ -182,13 +185,13 @@ export default function ImportsManagement() {
   useEffect(() => {
     const newQuery = updateQueryParams(searchParams, { page: 1 });
     router.push(`?${newQuery}`);
-  }, [isMinMaxFilterLoad, limit, searchBy, totalRange]);
+  }, [isMinMaxFilterLoad, limit, totalRange]);
 
 
   useEffect(() => {
     fetchImports();
 
-  }, [isMinMaxFilterLoad, page, limit, searchQuery, searchBy, fromDate, toDate, totalRange]);
+  }, [isMinMaxFilterLoad, page, limit, searchQuery, fromDate, toDate, status, type, totalRange]);
 
   return (
     <div className="px-8 py-6 space-y-8">
@@ -211,17 +214,6 @@ export default function ImportsManagement() {
           <div className="flex flex-col sm:flex-row gap-4">
             <SearchBar placeholder="Search import orders..." willUpdateQuery className="w-84" />
 
-            <Select value={searchBy} onValueChange={(value: ImportKey) => setSearchBy(value)}>
-              <SelectTrigger size="sm" className="w-full sm:w-36">
-                <SelectValue placeholder="Search by ..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="import_code">Import code</SelectItem>
-                <SelectItem value="staff_code">Staff code</SelectItem>
-                <SelectItem value="staff_name">Staff name</SelectItem>
-              </SelectContent>
-            </Select>
-
             <ImportsFilter
               data={minMaxFilterData}
               totalRange={totalRange}
@@ -232,11 +224,13 @@ export default function ImportsManagement() {
 
         <CardContent>
           <Suspense fallback={<Spinner />}>
-            <ImportsTable
-              loading={loading}
-              data={data || []}
-              onView={(id) => { router.push(`import-history/${id}`) }}
-            />
+            <div className="flex-row">
+              <ImportsTable
+                loading={loading}
+                data={data || []}
+                onView={(id) => { router.push(`import-history/${id}`) }}
+              />
+            </div>
           </Suspense>
 
           <Pagination total={total} page={page} limit={limit} onLimitChange={setLimit} item="result" />

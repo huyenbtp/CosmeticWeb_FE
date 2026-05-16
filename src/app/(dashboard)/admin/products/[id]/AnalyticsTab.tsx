@@ -40,7 +40,15 @@ export default function AnalyticsTab({
         <CardContent className="space-y-4">
           <div className="flex justify-between items-center">
             <span className="text-muted-foreground">Current Stock Level</span>
-            <span className="font-bold">{product.stock_quantity}</span>
+            <span className="font-bold">{product.total_stock}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-muted-foreground">Reserved Quantity</span>
+            <span className="font-bold">{product.reserved_stock}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-muted-foreground">Available Stock Quantity</span>
+            <span className="font-bold">{product.available_stock}</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-muted-foreground">Last Import On</span>
