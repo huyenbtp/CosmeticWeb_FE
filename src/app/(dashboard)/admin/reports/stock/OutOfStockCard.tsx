@@ -5,12 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ExternalLink, TrendingDown } from "lucide-react";
 import { IOutOfStockItem } from "@/interfaces/stock.interface";
 import dayjs from "dayjs";
+import { useRouter } from "next/navigation";
 
 export default function OutOfStockCard({
   data,
 }: {
   data: IOutOfStockItem[]
 }) {
+  const router = useRouter();
 
   return (
     <Card>
@@ -21,6 +23,7 @@ export default function OutOfStockCard({
             Out of Stock Items
           </CardTitle>
 
+          {/** 
           {data.length > 0 &&
             <Button
               variant="ghost"
@@ -30,18 +33,23 @@ export default function OutOfStockCard({
               <ExternalLink className="ml-1" />
             </Button>
           }
+          */}
         </div>
       </CardHeader>
 
       <CardContent>
         <div className="space-y-4">
           {data.map((item) => (
-            <div key={item.name} className="p-4 border rounded-lg bg-error1/30">
+            <div
+              key={item._id}
+              className="p-4 border rounded-lg cursor-pointer bg-error1/30"
+              onClick={() => router.push(`../products/${item._id}`)}
+            >
               <div className="flex justify-between items-start mb-2">
                 <div>
                   <h4 className="font-medium">{item.name}</h4>
                   <p className="text-sm text-muted-foreground">
-                    {item.category} • {item.brand}
+                    SKU: {item.sku} • Brand: {item.brand}
                   </p>
                 </div>
                 <Badge variant="destructive">Out of Stock</Badge>

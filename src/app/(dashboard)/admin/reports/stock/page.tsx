@@ -17,18 +17,18 @@ const stats: IStockStats = {
 }
 
 const lowStockItems: ILowStockItem[] = [
-  { _id: "1", name: "Son môi lì Red Velvet", category: "Makeup", stock_quantity: 2, brand: "3CE", last_imported: "2025-11-06T19:30:02" },
-  { _id: "2", name: "Kem dưỡng ẩm Hada Labo", category: "Skincare", stock_quantity: 1, brand: "Rohto", last_imported: "2025-11-06T19:30:02" },
-  { _id: "3", name: "Sữa rửa mặt Innisfree Green Tea", category: "Skincare", stock_quantity: 3, brand: "Innisfree", last_imported: "2025-11-06T19:30:02" },
-  { _id: "4", name: "Kem chống nắng Anessa Perfect UV", category: "Suncare", stock_quantity: 4, brand: "Shiseido", last_imported: "2025-11-06T19:30:02" },
-  { _id: "5", name: "Phấn phủ Fit Me Matte + Poreless", category: "Makeup", stock_quantity: 8, brand: "Maybelline", last_imported: "2025-11-06T19:30:02" },
-  { _id: "6", name: "Serum Vitamin C Melano CC", category: "Skincare", stock_quantity: 5, brand: "Rohto", last_imported: "2025-11-06T19:30:02" },
+  { _id: "694837ce08ec44380953aebb", name: "Son môi lì Red Velvet", sku: "LIP-3CE-2026-0001", stock_quantity: 2, brand: "3CE", last_imported: "2025-11-06T19:30:02" },
+  { _id: "2", name: "Kem dưỡng ẩm Hada Labo", sku: "MOI-ROH-2026-0001", stock_quantity: 1, brand: "Rohto", last_imported: "2025-11-06T19:30:02" },
+  { _id: "3", name: "Sữa rửa mặt Innisfree Green Tea", sku: "CLE-INN-2026-0001", stock_quantity: 3, brand: "Innisfree", last_imported: "2025-11-06T19:30:02" },
+  { _id: "4", name: "Kem chống nắng Anessa Perfect UV", sku: "SUN-SHI-2026-0001", stock_quantity: 4, brand: "Shiseido", last_imported: "2025-11-06T19:30:02" },
+  { _id: "5", name: "Phấn phủ Fit Me Matte + Poreless", sku: "POW-MAY-0001", stock_quantity: 8, brand: "Maybelline", last_imported: "2025-11-06T19:30:02" },
+  { _id: "6", name: "Serum Vitamin C Melano CC", sku: "SER-ROH-2026-0001", stock_quantity: 5, brand: "Rohto", last_imported: "2025-11-06T19:30:02" },
 ];
 
 const outOfStockItems: IOutOfStockItem[] = [
-  { _id: "7", name: "Toner Simple Kind to Skin", category: "Skincare", brand: "Unilever", last_imported: "2025-11-06T19:30:02" },
-  { _id: "8", name: "Mặt nạ giấy Mediheal Tea Tree", category: "Skincare", brand: "Mediheal", last_imported: "2025-11-06T19:30:02" },
-  { _id: "9", name: "Dầu gội Tsubaki Premium Moist", category: "Hair Care", brand: "Shiseido", last_imported: "2025-11-06T19:30:02" },
+  { _id: "7", name: "Toner Simple Kind to Skin", sku: "TON-SIM-2026-0001", brand: "Unilever", last_imported: "2025-11-06T19:30:02" },
+  { _id: "694ae4efbe8952d1e4f58cb5", name: "Mặt nạ giấy Mediheal Tea Tree", sku: "PAP-MED-2026-0001", brand: "Mediheal", last_imported: "2025-11-06T19:30:02" },
+  { _id: "9", name: "Dầu gội Tsubaki Premium Moist", sku: "SHA-TSU-2026-0001", brand: "Shiseido", last_imported: "2025-11-06T19:30:02" },
 ];
 
 interface IStockManagementData {
@@ -62,6 +62,8 @@ export default function StockManagement() {
         <h1 className="text-2xl font-semibold">
           Stock Management
         </h1>
+
+        {/** 
         <div className="flex gap-4">
           <Button
             variant="outline"
@@ -77,6 +79,7 @@ export default function StockManagement() {
             Import Stock
           </Button>
         </div>
+        */}
       </div>
 
       <StatCards data={data.stats} />

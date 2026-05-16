@@ -21,6 +21,11 @@ import {
   Handbag,
   ShoppingBasket,
   Tags,
+  BookOpen,
+  ArrowDownToLine,
+  ArrowUpToLine,
+  BarChart3,
+  Star,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -40,15 +45,23 @@ const navigationItems = {
   admin: [
     { href: "/admin/dashboard", label: "Dashboard", icon: Home },
     {
-      label: "Inventory",
-      icon: Package,
+      label: "Master Data",
+      icon: BookOpen,
       children: [
         { href: "/admin/products", label: "Products", icon: Package },
         { href: "/admin/categories", label: "Categories", icon: Grid2X2 },
         { href: "/admin/brands", label: "Brands", icon: BadgeCheck },
         { href: "/admin/skin-types", label: "Skin Types", icon: Grid2X2 },
         { href: "/admin/tags", label: "Tags", icon: Tags },
-        { href: "/admin/stock", label: "Stock", icon: Archive },
+      ],
+    },
+    {
+      label: "Inventory",
+      icon: Archive,
+      children: [
+        { href: "/admin/inventory/import-history", label: "Import", icon: ArrowDownToLine },
+        { href: "/admin/inventory/export-history", label: "Export", icon: ArrowUpToLine },
+        { href: "/admin/inventory/batches", label: "Batches", icon: Package },
       ],
     },
     {
@@ -57,15 +70,17 @@ const navigationItems = {
       children: [
         { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
         { href: "/admin/customers", label: "Customers", icon: UserStar },
+        { href: "/admin/feedbacks", label: "Feedbacks", icon: Star },
       ],
     },
-    { href: "/admin/discount-codes", label: "Discounts", icon: Percent },
+    //{ href: "/admin/discount-codes", label: "Discounts", icon: Percent },
     { href: "/admin/staffs", label: "Staffs", icon: Users },
     {
-      label: "Administration",
-      icon: Settings2,
+      label: "Reports",
+      icon: BarChart3,
       children: [
-        { href: "/admin/analytics", label: "Analytics", icon: TrendingUp },
+        { href: "/admin/reports/sales-analysis", label: "Sales Analysis", icon: TrendingUp },
+        { href: "/admin/reports/stock", label: "Stock Overview", icon: Archive },
       ],
     },
   ],
@@ -179,7 +194,7 @@ export default function DashboardSidebar({ role }: DashboardSidebarProps) {
         "bg-sidebar border-r transition-all duration-300 flex-shrink-0 overflow-y-auto",
         isCollapsed ? "w-20" : "w-65"
       )}
-      style={{ minHeight: "100vh" }}
+      style={{ minHeight: "100vh", paddingBottom: 50 }}
     >
       <div className="p-4">
         <div

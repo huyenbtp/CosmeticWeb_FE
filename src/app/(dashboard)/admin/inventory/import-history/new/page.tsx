@@ -26,6 +26,7 @@ export default function NewImport() {
 
   return (
     <ImportOrderForm
+      mode="create"
       loading={loading}
       onSubmit={(data) => handleSave(data)}
     />

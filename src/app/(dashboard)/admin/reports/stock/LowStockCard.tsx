@@ -5,12 +5,14 @@ import { AlertTriangle, ExternalLink } from "lucide-react";
 import { ILowStockItem } from "@/interfaces/stock.interface";
 import { Button } from "@/components/ui/button";
 import dayjs from "dayjs";
+import { useRouter } from "next/navigation";
 
 export default function LowStockCard({
   data,
 }: {
   data: ILowStockItem[]
 }) {
+  const router = useRouter();
 
   const getStockLevelInfo = (stock_quantity: number) => {
     if (stock_quantity <= 10) return { level: "critical", style: "bg-error1 text-error1-foreground" };
@@ -26,6 +28,7 @@ export default function LowStockCard({
             Low Stock Items
           </CardTitle>
 
+          {/** 
           {data.length > 0 &&
             <Button
               variant="ghost"
@@ -35,6 +38,7 @@ export default function LowStockCard({
               <ExternalLink className="ml-1" />
             </Button>
           }
+          */}
         </div>
       </CardHeader>
 
@@ -44,12 +48,16 @@ export default function LowStockCard({
             const stockInfo = getStockLevelInfo(item.stock_quantity);
 
             return (
-              <div key={item.name} className="p-4 border rounded-lg">
-                <div className="flex justify-between items-start mb-2">
+              <div
+                key={item._id}
+                className="p-4 border rounded-lg cursor-pointer"
+                onClick={() => router.push(`../products/${item._id}`)}
+              >
+                <div className="flex justify-between items-start mb-1">
                   <div>
                     <h4 className="font-medium">{item.name}</h4>
                     <p className="text-sm text-muted-foreground">
-                      {item.category} • {item.brand}
+                      SKU: {item.sku} • Brand: {item.brand}
                     </p>
                   </div>
                   <Badge

@@ -8,7 +8,7 @@ export interface IStockStats {
 export interface ILowStockItem {
   _id: string;
   name: string;
-  category: string;
+  sku: string;
   brand: string;
   stock_quantity: number;
   last_imported: string;
@@ -17,7 +17,7 @@ export interface ILowStockItem {
 export interface IOutOfStockItem {
   _id: string;
   name: string;
-  category: string;
+  sku: string;
   brand: string;
   last_imported: string;
 }
