@@ -43,3 +43,13 @@ export function getRoleName(role: string) {
       return ""
   }
 }
+
+export function getDaysBetweenTwoDates(firstDateInISO: string, secondDateInISO: string) {
+  const startDate = new Date(firstDateInISO);
+  const endDate = new Date(secondDateInISO);
+
+  const firstDate = Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+  const secondDate = Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+
+  return Math.abs((firstDate - secondDate) / (24 * 60 * 60 * 1000));
+}
