@@ -10,7 +10,7 @@ import { OrderStatus } from "@/lib/api/order.api";
 import { Info } from "lucide-react";
 
 const NullOrderStatus: IUpdateOrderStatus = {
-  status: "",
+  newStatus: "",
   notes: ""
 };
 
@@ -49,8 +49,8 @@ export default function UpdateOrderStatusDialog({
               Status
             </Label>
             <Select
-              value={formData.status}
-              onValueChange={(value: OrderStatus) => setFormData({ ...formData, status: value })}
+              value={formData.newStatus}
+              onValueChange={(value: OrderStatus) => setFormData({ ...formData, newStatus: value })}
               disabled={loading}
             >
               <SelectTrigger size="default" className="w-full">
@@ -62,7 +62,7 @@ export default function UpdateOrderStatusDialog({
                 ))}
               </SelectContent>
             </Select>
-            {formData.status === "packed" && (
+            {formData.newStatus === "packed" && (
               <div className="flex items-center gap-1 mt-3">
                 <Info className="h-4 w-4 text-muted-foreground" />
                 <span className="text-xs text-muted-foreground">
@@ -107,7 +107,7 @@ export default function UpdateOrderStatusDialog({
             onClick={() => {
               onSubmit(formData)
             }}
-            disabled={!formData.status || loading}
+            disabled={!formData.newStatus || loading}
           >
             Submit
           </Button>

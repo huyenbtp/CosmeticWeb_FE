@@ -88,7 +88,7 @@ export default function OrderDetail() {
   const [dialogVisible, setDialogVisible] = useState(false);
 
   const handleUpdateStatus = async (updateData: IUpdateOrderStatus) => {
-    if (!id || !updateData.status) return;
+    if (!id || !updateData.newStatus) return;
     setLoading(true)
 
     try {

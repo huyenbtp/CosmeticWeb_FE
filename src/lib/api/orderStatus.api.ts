@@ -3,7 +3,7 @@ import axios from "@/lib/axios";
 
 export interface OrderStatusPayload {
   order_id: string;
-  status: string;
+  newStatus: string;
   notes?: string;
 }
 

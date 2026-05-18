@@ -13,6 +13,6 @@ export interface IOrderStatus {
 }
 
 export interface IUpdateOrderStatus {
-  status: string;
+  newStatus: string;
   notes?: string;
 }
