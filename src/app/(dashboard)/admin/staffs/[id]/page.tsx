@@ -89,7 +89,7 @@ export default function StaffDetail() {
   const fetchStaff = async () => {
     setLoading(true)
     try {
-      const res = await staffApi.fetchStaffById(id);
+      const res = await staffApi.fetchStaffByUserId(id);
       setData(res);
     } catch (error) {
       console.error("Fetch staff failed:", error);

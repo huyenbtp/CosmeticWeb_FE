@@ -1,16 +1,71 @@
 import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useRouter, useSearchParams } from "next/navigation";
-import { updateQueryParams } from "@/lib/utils";
+import { capitalize, updateQueryParams } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { DateRangePicker } from "@/components/layout/DateRangePicker";
 import { DateRange } from "react-day-picker";
+import { Check, Clock, Package, PackageOpen, Truck, XCircle } from "lucide-react";
+import { getStatusIcon } from "./[id]/StatusTab";
 
-export function getOrderStatusBadge(status: string) {
+export function getOrderPaymentStatusBadge(status: string) {
   if (status === "paid") {
     return <Badge className="bg-success1 text-success1-foreground">Paid</Badge>
   } else if (status === "unpaid") {
     return <Badge className="bg-error1 text-error1-foreground">Unpaid</Badge>
+  }
+};
+
+export function getOrderStatusBadge(status: string) {
+  if (status === "pending") {
+    return (
+      <Badge className="bg-warning1 text-warning1-foreground">
+        {getStatusIcon(status)}
+        {capitalize(status)}
+      </Badge>
+    )
+  } else if (status === "confirmed") {
+    return (
+      <Badge className="bg-info1 text-info1-foreground">
+        {getStatusIcon(status)}
+        {capitalize(status)}
+      </Badge>
+    )
+  } else if (status === "packed") {
+    return (
+      <Badge className="bg-info1 text-info1-foreground">
+        {getStatusIcon(status)}
+        {capitalize(status)}
+      </Badge>
+    )
+  } else if (status === "shipping") {
+    return (
+      <Badge className="bg-info1 text-info1-foreground">
+        {getStatusIcon(status)}
+        {capitalize(status)}
+      </Badge>
+    )
+  } else if (status === "delivered") {
+    return (
+      <Badge className="bg-success1 text-success1-foreground">
+        {getStatusIcon(status)}
+        {capitalize(status)}
+      </Badge>
+    )
+  } else if (status === "cancelled") {
+    return (
+      <Badge className="bg-error1 text-error1-foreground">
+        {getStatusIcon(status)}
+        {capitalize(status)}
+      </Badge>
+    )
+  } else if (status === "returned") {
+    return (
+      <Badge className="bg-error1 text-error1-foreground">
+        {getStatusIcon(status)}
+        {capitalize(status)}
+      </Badge>
+    )
   }
 };
 
@@ -70,18 +125,18 @@ export default function OrdersFilter() {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All payment method</SelectItem>
-          <SelectItem value="cash">Cash</SelectItem>
+          <SelectItem value="cod">COD</SelectItem>
           <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
         </SelectContent>
       </Select>
 
       <Select value={status} onValueChange={(value) => handleStatusChange(value)}>
-        <SelectTrigger size="sm" className="w-full sm:w-30">
+        <SelectTrigger size="sm" className="w-full sm:w-36">
           <SelectValue placeholder="Status" />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All status</SelectItem>
-          {["paid", "unpaid"].map(value => (
+          {["pending", "confirmed", "packed", "shipping", "delivered", "cancelled", "returned"].map(value => (
             <SelectItem key={value} value={value}>{getOrderStatusBadge(value)}</SelectItem>
           ))}
         </SelectContent>

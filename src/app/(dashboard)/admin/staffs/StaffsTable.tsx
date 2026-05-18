@@ -128,7 +128,7 @@ export default function StaffsTable({
                   variant="ghost"
                   size="sm"
                   title="View Detail"
-                  onClick={() => { onView(staff._id) }}
+                  onClick={() => { onView(staff.user._id) }}
                 >
                   <Eye className="w-4 h-4" />
                 </Button>
@@ -136,7 +136,7 @@ export default function StaffsTable({
                   variant="ghost"
                   size="sm"
                   title="Edit Staff"
-                  onClick={() => { onEdit(staff._id) }}
+                  onClick={() => { onEdit(staff.user._id) }}
                 >
                   <Edit className="w-4 h-4" />
                 </Button>

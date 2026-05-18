@@ -3,37 +3,46 @@ import { IAddEditOrderItem, IOrderItem } from "./orderItem.interface";
 export interface IOrder {
   _id: string;
   order_code: string;
-  customer_id: string | null;
+  user_id: string;
   customer: {
     _id: string;
-    name: string;
+    full_name: string;
     phone: string;
-  } | null;
+    email: string;
+  };
   total_items: number;
-  total: number;
+  total_estimated: number;
   payment_method: string;
-  payment_status: string;
+  order_status: string;
   createdAt: string;
 }
 
 export interface IOrderDetail {
   _id: string;
   order_code: string;
-  customer_id: string | null;
+  user_id: string | null;
   customer: {
     _id: string;
-    name: string;
+    full_name: string;
     phone: string;
-  } | null;
+    email: string;
+  } ;
   items: IOrderItem[];
   total_items: number;
   subtotal: number;
-  discount_amount: number;
-  points_used: number;
-  total: number;
+  shipping_fee: number;
+  total_estimated: number;
   payment_method: string;
   payment_status: string;
-  note: string;
+  order_status: string;
+  notes: string;
+  receiver_name: string;
+  phone: string;
+  address_line: string;
+  ward: string;
+  district: string;
+  city: string;
+  reveive_time: string | null;
   createdAt: string;
   updatedAt: string;
 }

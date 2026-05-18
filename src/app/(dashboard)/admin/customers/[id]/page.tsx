@@ -12,7 +12,6 @@ import { useParams, useRouter } from "next/navigation";
 import { ICustomerDetail } from "@/interfaces/customer.interface";
 import dayjs from "dayjs";
 import customerApi from "@/lib/api/customer.api";
-import AddressesTab from "./AddressList";
 
 const mockCustomers = {
   _id: '1',
@@ -128,7 +127,6 @@ export default function ProductDetail() {
         <TabsList className="space-x-2">
           <TabsTrigger value="details">Profile</TabsTrigger>
           <TabsTrigger value="orders">Order History</TabsTrigger>
-          <TabsTrigger value="addresses">Addresses</TabsTrigger>
         </TabsList>
 
         <TabsContent value="details" className="space-y-6">
@@ -137,10 +135,6 @@ export default function ProductDetail() {
 
         <TabsContent value="orders" className="space-y-6">
           <OrderHistoryTab data={data} />
-        </TabsContent>
-
-        <TabsContent value="addresses" className="space-y-6">
-          <AddressesTab data={data} />
         </TabsContent>
       </Tabs>
     </div>

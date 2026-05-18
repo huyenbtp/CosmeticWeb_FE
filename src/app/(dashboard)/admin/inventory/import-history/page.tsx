@@ -212,7 +212,7 @@ export default function ImportsManagement() {
       <Card>
         <CardHeader>
           <div className="flex flex-col sm:flex-row gap-4">
-            <SearchBar placeholder="Search import orders..." willUpdateQuery className="w-84" />
+            <SearchBar placeholder="Search import orders by import code" willUpdateQuery className="w-84" />
 
             <ImportsFilter
               data={minMaxFilterData}

@@ -183,7 +183,7 @@ export default function BatchesManagement() {
       <Card>
         <CardHeader>
           <div className="flex flex-col sm:flex-row gap-4">
-            <SearchBar placeholder="Search batches..." willUpdateQuery className="w-84" />
+            <SearchBar placeholder="Search batches by batch code" willUpdateQuery className="w-84" />
 
             <BatchesFilter />
           </div>

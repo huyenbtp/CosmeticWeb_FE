@@ -6,6 +6,7 @@ import { Eye, Edit, } from "lucide-react";
 import { IOrder } from "@/interfaces/order.interface";
 import dayjs from "dayjs";
 import { capitalizeWords } from "@/lib/utils";
+import { getOrderStatusBadge } from "./OrdersFilter";
 
 export function getStatusStyle(status: string) {
   if (status === "paid") {
@@ -33,7 +34,7 @@ export default function OrdersTable({
           <TableHead>Customer</TableHead>
           <TableHead>Order Date</TableHead>
           <TableHead className="text-right pr-8">Total</TableHead>
-          <TableHead className="text-center">Payment Method</TableHead>
+          <TableHead className="text-center">Payment</TableHead>
           <TableHead>Status</TableHead>
           <TableHead className="text-center">Actions</TableHead>
         </TableRow>
@@ -46,10 +47,10 @@ export default function OrdersTable({
               {order.order_code}
             </TableCell>
 
-            <TableCell className="w-16/100 max-w-80 pr-8" title={order.customer?.name}>
+            <TableCell className="w-16/100 max-w-80 pr-8" title={order.customer?.full_name}>
               <div>
-                <div className="font-medium">{order.customer?.name}</div>
-                <div className="text-muted-foreground">{order.customer?.phone}</div>
+                <div className="font-medium">{order.customer?.full_name}</div>
+                <div className="text-muted-foreground">{order.customer?.email}</div>
               </div>
             </TableCell>
 
@@ -58,27 +59,15 @@ export default function OrdersTable({
             </TableCell>
 
             <TableCell className="w-11/100 text-right font-medium">
-              {order.total.toLocaleString()} đ
+              {order.total_estimated.toLocaleString()} đ
             </TableCell>
 
-            <TableCell className="w-20/100 text-center text-muted-foreground">
-              {order.payment_method === "cash" ? "Cash" : "Bank Transfer"}
+            <TableCell className="w-16/100 text-center text-muted-foreground">
+              {order.payment_method === "cod" ? "COD" : "Bank Transfer"}
             </TableCell>
 
-            <TableCell className="w-10/100 font-medium">
-              <Select
-                defaultValue={order.payment_status}
-                value={order.payment_status}
-                onValueChange={() => { }}
-              >
-                <SelectTrigger size="xs" className={`w-fit text-xs shadow-none ${getStatusStyle(order.payment_status)}`}>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="paid" >Paid</SelectItem>
-                  <SelectItem value="unpaid">Unpaid</SelectItem>
-                </SelectContent>
-              </Select>
+            <TableCell className="w-12/100 font-medium">
+              {getOrderStatusBadge(order.order_status)}
             </TableCell>
 
             <TableCell className="text-center">
@@ -90,6 +79,7 @@ export default function OrdersTable({
               >
                 <Eye className="w-4 h-4" />
               </Button>
+              {/** 
               <Button
                 variant="ghost"
                 size="sm"
@@ -98,6 +88,7 @@ export default function OrdersTable({
               >
                 <Edit className="w-4 h-4" />
               </Button>
+              */}
             </TableCell>
           </TableRow>
         ))) : (

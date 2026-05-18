@@ -4,6 +4,7 @@ import axios from "@/lib/axios";
 export type OrderKey = "order_code";
 export type OrderPaymentMethod = "cash" | "bank_transfer";
 export type OrderPaymentStatus = "paid" | "unpaid";
+export type OrderStatus = "pending" | "confirmed" | "packed" | "shipping" | "delivered" | "cancelled" | "returned";
 
 export interface FetchOrdersParams {
   page?: number;
@@ -13,7 +14,7 @@ export interface FetchOrdersParams {
   fromDate?: string;
   toDate?: string;
   payment_method?: OrderPaymentMethod;
-  payment_status?: OrderPaymentStatus;
+  order_status?: OrderStatus;
 }
 
 export interface OrderPayload {
@@ -30,19 +31,19 @@ export interface OrderPayload {
 
 const orderApi = {
   fetchOrders: async (params: FetchOrdersParams): Promise<{ data: any, pagination: any }> => {
-    return axios.get("/orders", { params });
+    return axios.get("/api/orders/pagination", { params });
   },
 
   fetchOrderById: async (id: string): Promise<IOrderDetail> => {
-    return axios.get(`/orders/${id}`);
+    return axios.get(`/api/orders/${id}`);
   },
 
   createOrder: async (payload: OrderPayload): Promise<IOrder> => {
-    return axios.post("/orders", payload);
+    return axios.post("/api/orders", payload);
   },
 
   updateNote: async (id: string, note: string): Promise<IOrder> => {
-    return axios.patch(`/orders/${id}/note`, { note });
+    return axios.patch(`/api/orders/${id}/note`, { note });
   },
 }
 

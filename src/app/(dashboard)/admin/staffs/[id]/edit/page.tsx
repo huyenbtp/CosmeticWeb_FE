@@ -49,7 +49,7 @@ export default function EditStaff() {
   const fetchStaff = async () => {
     setLoading(true)
     try {
-      const res = await staffApi.fetchStaffByIdToAdminEdit(id);
+      const res = await staffApi.fetchStaffByUserIdToAdminEdit(id);
       setData(res);
       console.log(res)
     } catch (error) {

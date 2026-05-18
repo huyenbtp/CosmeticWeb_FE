@@ -1,7 +1,5 @@
 export interface IOrderItem {
   _id: string;
-  order_id: string;
-  product_id: string;
   product: {
     _id: string;
     sku: string;

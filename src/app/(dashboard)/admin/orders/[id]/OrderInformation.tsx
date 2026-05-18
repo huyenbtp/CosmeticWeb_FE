@@ -1,12 +1,8 @@
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Table, TableHeader, TableHead, TableRow, TableBody, TableCell } from "@/components/ui/table";
-import { ImageWithFallback } from "@/components/layout/ImageWithFallback";
 import { IOrderDetail } from "@/interfaces/order.interface";
-import { CreditCard, User, UserStar } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { getOrderStatusBadge } from "../OrdersFilter";
+import { CreditCard, MapPin, UserStar } from "lucide-react";
+import { getOrderStatusBadge, getOrderPaymentStatusBadge, } from "../OrdersFilter";
 
 export default function OrderInformation({
   data,
@@ -16,17 +12,17 @@ export default function OrderInformation({
   return (
     <>
       {/* notes */}
-      {data.note && (
+      {data.notes && (
         <Card>
           <CardHeader>
             <CardTitle className="">Order Notes</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-accent-foreground">{data.note}</p>
+            <p className="text-accent-foreground">{data.notes}</p>
           </CardContent>
         </Card>
       )}
-      
+
       {/* Customer Information
       <Card>
         <CardHeader>
@@ -55,13 +51,34 @@ export default function OrderInformation({
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="space-y-1">
-              <div className="font-medium">{data.customer.name}</div>
+              <div className="font-medium">{data.customer.full_name}</div>
+              <div className="text-sm text-muted-foreground">{data.customer.email}</div>
               <div className="text-sm text-muted-foreground">{data.customer.phone}</div>
             </div>
           </CardContent>
         </Card>
       )}
 
+      {/* Shipping  Information */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-3">
+            <MapPin className="w-5 h-5" />
+            Shipping Address
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="space-y-1">
+            <div className="text-sm">Receiver: {data.receiver_name}</div>
+            <div className="text-sm">Phone number: {data.phone}</div>
+            <div className="text-sm">{data.address_line}</div>
+            <div className="text-sm">{data.ward}, {data.district}</div>
+            <div className="text-sm">{data.city}</div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Payment Information */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-3">
@@ -73,11 +90,11 @@ export default function OrderInformation({
           <div className="space-y-3">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Status</span>
-              {getOrderStatusBadge(data.payment_status)}
+              {getOrderPaymentStatusBadge(data.payment_status)}
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Method</span>
-              <span>{data.payment_method === "cash" ? "Cash" : "Bank Transfer"}</span>
+              <span>{data.payment_method === "cod" ? "COD" : "Bank Transfer"}</span>
             </div>
           </div>
         </CardContent>

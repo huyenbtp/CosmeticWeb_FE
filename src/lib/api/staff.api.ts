@@ -41,12 +41,12 @@ const staffApi = {
     return axios.get("/api/staffs", { params });
   },
 
-  fetchStaffById: async (id: string): Promise<IStaffDetail> => {
-    return axios.get(`/api/staffs/${id}`);
+  fetchStaffByUserId: async (user_id: string): Promise<IStaffDetail> => {
+    return axios.get(`/api/staffs/${user_id}`);
   },
 
-  fetchStaffByIdToAdminEdit: async (id: string): Promise<IEditStaff> => {
-    return axios.get(`/api/staffs/admin-edit/${id}`);
+  fetchStaffByUserIdToAdminEdit: async (user_id: string): Promise<IEditStaff> => {
+    return axios.get(`/api/staffs/admin-edit/${user_id}`);
   },
 
   createStaff: async (payload: CreateStaffPayload): Promise<IStaff> => {

@@ -5,12 +5,16 @@ import { Table, TableHeader, TableHead, TableRow, TableBody, TableCell } from "@
 import { ICustomerDetail } from "@/interfaces/customer.interface";
 import dayjs from "dayjs";
 import { ChevronRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { getOrderStatusBadge } from "../../orders/OrdersFilter";
 
 export default function OrderHistoryTab({
   data,
 }: {
   data: ICustomerDetail;
 }) {
+  const router = useRouter();
+
   return (
     <Card>
       <CardHeader>
@@ -42,10 +46,14 @@ export default function OrderHistoryTab({
                   {item.total_estimated.toLocaleString()} đ
                 </TableCell>
                 <TableCell className="w-2/9 text-center text-muted-foreground">
-                  {item.order_status}
+                  {getOrderStatusBadge(item.order_status)}
                 </TableCell>
                 <TableCell className="w-1/9 text-center">
-                  <Button variant="ghost" size="sm">
+                  <Button 
+                  variant="ghost"
+                   size="sm"
+                   onClick={() => router.push(`../orders/${item._id}`)}
+                  >
                     View Details
                     <ChevronRight />
                   </Button>

@@ -1,20 +1,27 @@
 "use client"
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { toast } from "sonner";
 import { Edit } from "lucide-react";
-import { getOrderStatusBadge } from "../OrdersFilter";
+import { getOrderPaymentStatusBadge, getOrderStatusBadge } from "../OrdersFilter";
 import StatCards from "./StatCards";
-import OrderItemsCard from "./OrderItemsCard";
-import OrderInformation from "./OrderInformation";
+import DetailsTab from "./DetailsTab";
+import StatusTab from "./StatusTab";
+import UpdateOrderStatusDialog from "./UpdateOrderStatusDialog";
 import dayjs from "dayjs";
 import { useParams, useRouter } from "next/navigation";
 import { IOrderDetail } from "@/interfaces/order.interface";
+import { IOrderStatus, IUpdateOrderStatus } from "@/interfaces/orderStatus.interface";
+import orderApi, { OrderStatus } from "@/lib/api/order.api";
+import orderStatusApi, { ALLOWED_TRANSITIONS } from "@/lib/api/orderStatus.api";
 
-const mockOrder: IOrderDetail = {
+const mockOrder = {
   _id: "ORD-001",
   order_code: "ORD-2025-000001",
-  customer_id: "1",
+  user_id: "1",
   customer: {
     _id: "1",
     name: "Emma Wilson",
@@ -63,22 +70,81 @@ const mockOrder: IOrderDetail = {
   ],
   total_items: 3,
   subtotal: 985000,
-  discount_amount: 98500,
+  shipping_fee: 98500,
   points_used: 10000,
-  total: 876500,
+  total_estimated: 876500,
   payment_method: "COD",
   payment_status: "paid",
-  note: "",
+  notes: "",
   createdAt: "2025-11-15T09:30:00",
   updatedAt: "2025-11-15T09:30:00",
 };
 
-export default function ProductDetail() {
-  const router = useRouter();
-  const { id } = useParams()
-  const [data, setData] = useState<IOrderDetail>(mockOrder);
+export default function OrderDetail() {
+  const { id } = useParams<{ id: string }>();
+  const [data, setData] = useState<IOrderDetail>();
+  const [statusHistory, setStatusHistory] = useState<IOrderStatus[]>();
+  const [loading, setLoading] = useState(false);
+  const [dialogVisible, setDialogVisible] = useState(false);
 
-  return (
+  const handleUpdateStatus = async (updateData: IUpdateOrderStatus) => {
+    if (!id || !updateData.status) return;
+    setLoading(true)
+
+    try {
+      const payload = {
+        order_id: id,
+        ...updateData
+      }
+      await orderStatusApi.updateOrderStatus(payload);
+
+      toast.success("Update order status successfully")
+
+      fetchOrder();
+      fetchOrderStatus();
+    } catch (error) {
+      toast.error("Create category failed:" + error);
+    } finally {
+      setLoading(false);
+      setDialogVisible(false);
+    }
+  };
+
+  const fetchOrder = async () => {
+    setLoading(true)
+    try {
+      const res = await orderApi.fetchOrderById(id);
+      setData(res);
+    } catch (error) {
+      toast.error("Fetch order failed:" + error);
+    } finally {
+      setLoading(false)
+    }
+  };
+
+  const fetchOrderStatus = async () => {
+    setLoading(true)
+    try {
+      const res = await orderStatusApi.fetchOrderStatusByOrderId(id);
+      setStatusHistory(res);
+    } catch (error) {
+      toast.error("Fetch order status failed:" + error);
+    } finally {
+      setLoading(false)
+    }
+  };
+
+  useEffect(() => {
+    fetchOrder();
+    fetchOrderStatus();
+  }, []);
+
+  if (loading) return (
+    <div className="h-full flex justify-center items-center">
+      <Spinner className="size-12" />
+    </div>
+  )
+  if (data && statusHistory) return (
     <div className="px-8 py-6 space-y-6">
       <div className="flex items-center gap-4">
         <div className="flex-1 mr-10">
@@ -88,27 +154,39 @@ export default function ProductDetail() {
           </p>
         </div>
 
-        <Button
-          onClick={() => { }}
-        >
-          <Edit className="w-4 h-4 mr-2" />
-          Edit Order
-        </Button>
+        {getOrderStatusBadge(data.order_status,)}
+        {getOrderPaymentStatusBadge(data.payment_status)}
+
       </div>
 
       <StatCards data={data} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Order Items */}
-        <div className="lg:col-span-2">
-          <OrderItemsCard data={data} />
-        </div>
+      <Tabs defaultValue="details" className="w-full space-y-1">
+        <TabsList className="space-x-2">
+          <TabsTrigger value="details">Order Details</TabsTrigger>
+          <TabsTrigger value="status">Status</TabsTrigger>
+        </TabsList>
 
-        {/* Order Information */}
-        <div className="col-span-1 space-y-6">
-          <OrderInformation data={data} />
-        </div>
-      </div>
+        <TabsContent value="details" className="space-y-6">
+          <DetailsTab data={data} />
+        </TabsContent>
+
+        <TabsContent value="status" className="space-y-6">
+          <StatusTab
+            currentStatus={data.order_status as OrderStatus}
+            data={statusHistory}
+            openUpdateDialog={() => setDialogVisible(true)}
+          />
+        </TabsContent>
+      </Tabs>
+
+      <UpdateOrderStatusDialog
+        loading={loading}
+        availableStatusList={ALLOWED_TRANSITIONS[data.order_status]}
+        open={dialogVisible}
+        setOpen={setDialogVisible}
+        onSubmit={handleUpdateStatus}
+      />
     </div>
   );
 }
