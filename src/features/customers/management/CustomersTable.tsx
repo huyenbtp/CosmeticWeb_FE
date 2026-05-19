@@ -13,7 +13,7 @@ import SearchBar from "@/components/layout/SearchBar";
 import { Pagination } from "@/components/layout/Pagination";
 import { ICustomer, IAddEditCustomer } from "@/interfaces/customer.interface";
 import dayjs from "dayjs";
-import { getStatusStyle } from "../staffs/StaffsTable";
+import { getStatusStyle } from "@/features/staffs/management/StaffsTable";
 
 type CustomerKey = "name" | "phone";
 

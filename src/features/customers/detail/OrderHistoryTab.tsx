@@ -6,7 +6,7 @@ import { ICustomerDetail } from "@/interfaces/customer.interface";
 import dayjs from "dayjs";
 import { ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { getOrderStatusBadge } from "../../orders/OrdersFilter";
+import { getOrderStatusBadge } from "@/features/orders/management/OrdersFilter";
 
 export default function OrderHistoryTab({
   data,

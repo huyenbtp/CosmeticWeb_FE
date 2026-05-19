@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ICustomerDetail } from "@/interfaces/customer.interface";
 import dayjs from "dayjs";
-import { getCustomerStatusBadge } from "../CustomersFilter";
+import { getCustomerStatusBadge } from "../management/CustomersFilter";
 import { capitalizeWords } from "@/lib/utils";
 import { Calendar, Mars, Phone, User, Venus } from "lucide-react";
 

@@ -9,8 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import ImageUploader, { ImageState } from "@/components/layout/ImageUploader";
 import { IAddEditProduct, IFetchedBrand, IFetchedCategory, IFetchedSkinType, IFetchedTag } from "@/interfaces/product.interface";
-import Combobox from "../Combobox";
-import MultiSelectCombobox from "../MultiSelectCombobox";
+import Combobox from "@/components/layout/Combobox";
+import MultiSelectCombobox from "@/components/layout/MultiSelectCombobox";
 import { ChevronDown, ChevronUp, CircleX } from "lucide-react";
 
 const NullProduct: IAddEditProduct = {

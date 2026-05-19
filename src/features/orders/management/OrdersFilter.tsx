@@ -5,8 +5,7 @@ import { capitalize, updateQueryParams } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { DateRangePicker } from "@/components/layout/DateRangePicker";
 import { DateRange } from "react-day-picker";
-import { Check, Clock, Package, PackageOpen, Truck, XCircle } from "lucide-react";
-import { getStatusIcon } from "./[id]/StatusTab";
+import { getStatusIcon } from "../detail/StatusTab";
 
 export function getOrderPaymentStatusBadge(status: string) {
   if (status === "paid") {

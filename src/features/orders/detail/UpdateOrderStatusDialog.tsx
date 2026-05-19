@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { IUpdateOrderStatus } from "@/interfaces/orderStatus.interface";
-import { getOrderStatusBadge } from "../OrdersFilter";
+import { getOrderStatusBadge } from "../management/OrdersFilter";
 import { OrderStatus } from "@/lib/api/order.api";
 import { Info } from "lucide-react";
 

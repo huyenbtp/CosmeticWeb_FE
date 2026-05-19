@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { IStaffDetail } from "@/interfaces/staff.interface";
 import dayjs from "dayjs";
 import { Calendar, CircleUser, Mars, Phone, User, Venus } from "lucide-react";
-import { getStaffStatusBadge } from "../StaffsFilter";
+import { getStaffStatusBadge } from "@/features/staffs/management/StaffsFilter";
 import { capitalizeWords } from "@/lib/utils";
 
 export default function ProfileTab({

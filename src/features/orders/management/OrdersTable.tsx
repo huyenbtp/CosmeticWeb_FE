@@ -1,11 +1,8 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Eye, Edit, } from "lucide-react";
+import { Eye, } from "lucide-react";
 import { IOrder } from "@/interfaces/order.interface";
 import dayjs from "dayjs";
-import { capitalizeWords } from "@/lib/utils";
 import { getOrderStatusBadge } from "./OrdersFilter";
 
 export function getStatusStyle(status: string) {

@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { ImageWithFallback } from "@/components/layout/ImageWithFallback";
 import { IProductDetail } from "@/interfaces/product.interface";
-import { getProductStatusBadge } from "../ProductsFilter";
+import { getProductStatusBadge } from "../management/ProductsFilter";
 import dayjs from "dayjs";
 import { CircleX } from "lucide-react";
 

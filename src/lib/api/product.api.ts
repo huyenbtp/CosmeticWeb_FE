@@ -1,4 +1,4 @@
-import { IFetchedProduct } from "@/app/(dashboard)/admin/inventory/import-history/new/AddImportItemDialog";
+import { IFetchedProduct } from "@/features/inventory/inventoryImports/shared/AddImportItemDialog";
 import { ICheckoutProduct, IMinMaxFilterData, IProduct, IProductDetail } from "@/interfaces/product.interface";
 import axios from "@/lib/axios";
 

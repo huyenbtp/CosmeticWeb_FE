@@ -7,7 +7,7 @@ import { IAddEditImport, IImportDetail } from "@/interfaces/import.interface";
 import { IImportItemUI } from "@/interfaces/importItem.interface";
 import AddEditImportItemDialog from "./AddImportItemDialog";
 import { Textarea } from "@/components/ui/textarea";
-import ImportItemsTable from "./ImportItemsTable";
+import ImportItemsTable from "../create/ImportItemsTable";
 
 const NullImport: IAddEditImport = {
   items: [],

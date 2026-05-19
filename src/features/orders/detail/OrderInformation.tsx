@@ -2,7 +2,7 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { IOrderDetail } from "@/interfaces/order.interface";
 import { CreditCard, MapPin, UserStar } from "lucide-react";
-import { getOrderStatusBadge, getOrderPaymentStatusBadge, } from "../OrdersFilter";
+import { getOrderPaymentStatusBadge } from "../management/OrdersFilter";
 
 export default function OrderInformation({
   data,

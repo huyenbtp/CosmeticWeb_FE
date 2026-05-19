@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Save } from "lucide-react";
-import { getStaffStatusBadge } from "./StaffsFilter";
+import { getStaffStatusBadge } from "@/features/staffs/management/StaffsFilter";
 import dayjs from "dayjs";
 import { IAddEditStaff } from "@/interfaces/staff.interface";
 import ImageUploader, { ImageState } from "@/components/layout/ImageUploader";
