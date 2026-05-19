@@ -1,8 +1,14 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useRouter, useSearchParams } from "next/navigation";
-import { capitalizeWords, getRoleName, updateQueryParams } from "@/lib/utils";
+import { getRoleName, updateQueryParams } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { IRole } from "@/interfaces/role.interface";
+
+export function getStaffRoleBadge(role: string) {
+  return (
+    <Badge variant={"secondary"}>{getRoleName(role)}</Badge>
+  )
+};
 
 export function getStaffStatusBadge(status: string) {
   if (status === "active") {
@@ -73,7 +79,7 @@ export default function StaffsFilter({
         <SelectContent>
           <SelectItem value="all">All role</SelectItem>
           {roles.map((item) => (
-            <SelectItem key={item._id} value={item._id}>{getRoleName(item.name)}</SelectItem>
+            <SelectItem key={item._id} value={item._id}>{getStaffRoleBadge(item.name)}</SelectItem>
           ))}
         </SelectContent>
       </Select>

@@ -39,7 +39,8 @@ export default function StaffsManagementPage() {
     const initFilters = async () => {
       try {
         const roleRes = await roleApi.fetchAllRoles();
-        setRoles(roleRes);
+        const staffRoles = roleRes.filter(r => r.name !== "customer");
+        setRoles(staffRoles);
       } catch (err) {
         console.error("Init filter failed", err);
       }

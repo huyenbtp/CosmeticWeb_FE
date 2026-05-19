@@ -14,7 +14,7 @@ import ProfileTab from "./ProfileTab";
 import dayjs from "dayjs";
 import { useParams, useRouter } from "next/navigation";
 import { IStaffDetail } from "@/interfaces/staff.interface";
-import { capitalizeWords } from "@/lib/utils";
+import { getRoleName } from "@/lib/utils";
 import staffApi from "@/lib/api/staff.api";
 
 const mockStaff = {
@@ -110,19 +110,21 @@ export default function StaffDetailPage() {
   if (data) return (
     <div className="px-8 py-6 space-y-6 flex flex-col h-full">
       <Card className="py-4">
-        <CardContent className="flex gap-4 px-4">
+        <CardContent className="flex flex-col sm:flex-row gap-4 px-4">
           <ImageWithFallback
             src={data.image}
             alt={data.full_name}
             className="w-30 h-30 rounded-lg object-cover"
           />
           <div className="flex flex-col flex-1 mr-10">
-            <h1 className="text-2xl font-semibold">{data.full_name}</h1>
-            <p className="flex-1 text-muted-foreground">
+            <h1 className="text-2xl font-semibold mb-0.5">{data.full_name}</h1>
+            <div className="mb-auto flex flex-col sm:flex-row gap-1 items-center">
               <Badge variant="outline">
-                {capitalizeWords(data.user.role)}
-              </Badge> - Employee since {dayjs(data.createdAt).format("MMM D, YYYY")}
-            </p>
+                {getRoleName(data.user.role)}
+              </Badge>
+              <span className="text-muted-foreground"> - Staff Code:</span>
+              <span>{data.staff_code}</span>
+            </div>
             <div className="flex items-center gap-2">
               <Phone size={16} />
               <p className="text-muted-foreground text-sm">
@@ -148,7 +150,7 @@ export default function StaffDetailPage() {
       <Tabs defaultValue="profile" className="w-full space-y-1 h-full">
         <TabsList className="space-x-2">
           <TabsTrigger value="profile">Profile</TabsTrigger>
-        {/** 
+          {/** 
           {data.account.role === "warehouse_manager" &&
             <TabsTrigger value="purchasesHandled">Purchases Handled</TabsTrigger>
           }
@@ -160,7 +162,7 @@ export default function StaffDetailPage() {
         </TabsContent>
 
         <TabsContent value="purchasesHandled" className="space-y-6">
-        {/**
+          {/**
           {data.account.role === "warehouse_manager" &&
             <PurchasesHandledTab data={data.purchasesHandled} />
           }

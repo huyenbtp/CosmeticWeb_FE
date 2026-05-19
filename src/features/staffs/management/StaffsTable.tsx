@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Eye, Edit, } from "lucide-react";
 import { IStaff } from "@/interfaces/staff.interface";
 import { Spinner } from "@/components/ui/spinner";
+import { getStaffRoleBadge } from "./StaffsFilter";
 
 export function getStatusStyle(status: string) {
   if (status === "active") {
@@ -54,7 +55,7 @@ export default function StaffsTable({
 
           return (
             <TableRow key={staff._id}>
-              <TableCell className="w-14/100 ">
+              <TableCell className="w-10/100 ">
                 {staff.staff_code}
               </TableCell>
 
@@ -74,7 +75,7 @@ export default function StaffsTable({
                 {staff.phone}
               </TableCell>
 
-              <TableCell className="w-14/100 font-medium">
+              <TableCell className="w-15/100 font-medium">
                 <Select
                   defaultValue={staff.status}
                   value={staff.status}
@@ -91,23 +92,11 @@ export default function StaffsTable({
                 </Select>
               </TableCell>
 
-              <TableCell className="w-14/100 font-medium ">
-                <Select
-                  defaultValue={staff.user.role.name}
-                  value={staff.user.role.name}
-                  onValueChange={() => { }}
-                >
-                  <SelectTrigger size="xs" className="inline-flex w-fit bg-secondary text-primary text-xs shadow-none">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="admin">Admin</SelectItem>
-                    <SelectItem value="warehouse_manager">Warehouse Manager</SelectItem>
-                  </SelectContent>
-                </Select>
+              <TableCell className="w-18/100 font-medium ">
+                {getStaffRoleBadge(staff.user.role.name)}
               </TableCell>
 
-              <TableCell className="w-12/100 font-medium">
+              <TableCell className="w-11/100 font-medium">
                 <Select
                   defaultValue={accStatus}
                   value={accStatus}
@@ -118,7 +107,7 @@ export default function StaffsTable({
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="active" >Active</SelectItem>
-                    <SelectItem value="inactive">In Active</SelectItem>
+                    <SelectItem value="inactive">Inactive</SelectItem>
                   </SelectContent>
                 </Select>
               </TableCell>

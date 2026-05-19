@@ -5,7 +5,7 @@ import { IStaffDetail } from "@/interfaces/staff.interface";
 import dayjs from "dayjs";
 import { Calendar, CircleUser, Mars, Phone, User, Venus } from "lucide-react";
 import { getStaffStatusBadge } from "@/features/staffs/management/StaffsFilter";
-import { capitalizeWords } from "@/lib/utils";
+import { capitalizeWords, getRoleName } from "@/lib/utils";
 
 export default function ProfileTab({
   data,
@@ -118,7 +118,7 @@ export default function ProfileTab({
             <div>
               <Label className="text-sm text-muted-foreground">Role</Label>
               <Badge variant="outline">
-                {capitalizeWords(data.user.role)}
+                {getRoleName(data.user.role)}
               </Badge>
             </div>
             <div>
