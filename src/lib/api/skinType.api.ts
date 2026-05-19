@@ -1,3 +1,4 @@
+import { IFetchedSkinType } from "@/interfaces/product.interface";
 import { ISkinType } from "@/interfaces/skinType.interface";
 import axios from "@/lib/axios";
 
@@ -7,7 +8,7 @@ export interface SkinTypePayload {
 }
 
 const skinTypeApi = {
-  fetchAllSkinTypes: async (): Promise<ISkinType[]> => {
+  fetchAllSkinTypes: async (): Promise<IFetchedSkinType[]> => {
     return axios.get("/api/skin-types");
   },
 
@@ -17,6 +18,10 @@ const skinTypeApi = {
 
   updateSkinType: async (id: string, payload: SkinTypePayload): Promise<ISkinType> => {
     return axios.put(`/api/skin-types/${id}`, payload);
+  },
+  
+  deleteSkinType: async (id: string): Promise<boolean> => {
+    return axios.delete(`/api/skin-types/${id}`);
   },
 }
 

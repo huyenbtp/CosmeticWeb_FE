@@ -9,7 +9,12 @@ import { Filter, Plus } from "lucide-react";
 import SearchBar from "@/components/layout/SearchBar";
 import TagsTable from "@/features/tags/management/TagsTable";
 import { Pagination } from "@/components/layout/Pagination";
-import { ITag } from "@/interfaces/tag.interface";
+import { IAddEditTag, ITag } from "@/interfaces/tag.interface";
+import tagApi, { TagStatus } from "@/lib/api/tag.api";
+import TagsFilter from "./TagsFilter";
+import AddEditTagDialog from "../shared/AddEditTagDialog";
+import { toast } from "sonner";
+import AlertDialog from "@/components/layout/AlertDialog";
 
 const mockTags: ITag[] = [
   {
@@ -47,26 +52,96 @@ const mockTags: ITag[] = [
 export default function TagsManagementPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [loading, setLoading] = useState(false);
 
-  const page = Number(searchParams.get("page") || 1) || 1;
-  const searchQuery = searchParams.get("q") || "";
-  const minTotal = Number(searchParams.get("minTotal") || 0) || 0;
-  const maxTotal = Number(searchParams.get("maxTotal") || 0) || 0;
-  const status = searchParams.get("status") || "";
-
-  const [limit, setLimit] = useState(7);
   const [data, setData] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
 
-  const fetchTags = async () => {
+  const [limit, setLimit] = useState(7);
+  const rawPage = Number(searchParams.get("page"));
+  const page = Number.isInteger(rawPage) && rawPage > 0 ? rawPage : 1;
+  const searchQuery = searchParams.get("q") || "";
+  const status = searchParams.get("status") || "";
 
+  const [selected, setSelected] = useState<ITag | null>(null);
+  const [isAddEditDialogOpen, setIsAddEditDialogOpen] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+
+  const fetchTags = async () => {
+    setLoading(true);
+
+    try {
+      const res = await tagApi.fetchTagsPagination({
+        page,
+        limit,
+        q: searchQuery || undefined,
+        status: status as TagStatus || undefined
+      });
+      setData(res.data);
+      setTotal(res.pagination?.total ?? 0);
+    } catch (error) {
+      console.error("Fetch tags failed:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreateTag = async (createData: IAddEditTag) => {
+    setLoading(true)
+
+    const { _id, ...payload } = createData;
+    try {
+      const res = await tagApi.createTag(payload);
+
+      setSelected(null);
+      setIsAddEditDialogOpen(false);
+      fetchTags();
+    } catch (error) {
+      toast.error("Create tag failed:" + error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdateTag = async (updateData: IAddEditTag) => {
+    const { _id, ...payload } = updateData;
+    if (!_id) return;
+
+    setLoading(true)
+
+    try {
+      const res = await tagApi.updateTag(_id, payload);
+
+      setSelected(null);
+      setIsAddEditDialogOpen(false);
+      fetchTags();
+    } catch (error) {
+      toast.error("Create tag failed:" + error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteSkinType = async () => {
+    if (!selected) return;
+    setLoading(true)
+
+    try {
+      const res = await tagApi.deleteTag(selected._id);
+
+      setSelected(null);
+      setAlertVisible(false);
+      fetchTags();
+    } catch (error) {
+      toast.error("Delete tag failed:" + error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     fetchTags();
-    setData(mockTags.slice(0, limit)) //sau khi fetch data thật thì xóa dòng này đi
-    setTotal(mockTags.length)
-  }, [page, limit, searchQuery, minTotal, maxTotal, status]);
+  }, [page, limit, searchQuery, status]);
 
   return (
     <div className="px-8 py-6 space-y-8">
@@ -76,7 +151,10 @@ export default function TagsManagementPage() {
         </h1>
         <div className="flex items-center gap-2">
           <Button
-            onClick={() => { router.push("tags/new") }}
+            onClick={() => {
+              setSelected(null)
+              setIsAddEditDialogOpen(true)
+            }}
           >
             <Plus className="w-4 h-4 mr-2" />
             Add New Tag
@@ -89,6 +167,7 @@ export default function TagsManagementPage() {
           <div className="flex flex-col sm:flex-row gap-4">
             <SearchBar placeholder="Search tags..." willUpdateQuery className="w-96" />
 
+            <TagsFilter />
           </div>
         </CardHeader>
 
@@ -96,8 +175,15 @@ export default function TagsManagementPage() {
           <Suspense fallback={<Spinner />}>
             <TagsTable
               data={data}
-              onViewProducts={(id) => { router.push(`tags/${id}`) }}
-              onEdit={(id) => { router.push(`tags/${id}/edit`) }}
+              onViewProducts={(id) => { }}
+              onEdit={(item) => {
+                setSelected(item)
+                setIsAddEditDialogOpen(true);
+              }}
+              onDelete={(item) => {
+                setSelected(item)
+                setAlertVisible(true);
+              }}
             />
           </Suspense>
 
@@ -105,6 +191,23 @@ export default function TagsManagementPage() {
 
         </CardContent>
       </Card>
+
+      <AddEditTagDialog
+        loading={loading}
+        initialData={selected}
+        open={isAddEditDialogOpen}
+        setOpen={setIsAddEditDialogOpen}
+        onCreate={(payload) => handleCreateTag(payload)}
+        onUpdate={(payload) => handleUpdateTag(payload)}
+      />
+
+      <AlertDialog
+        visible={alertVisible}
+        onVisibleChange={setAlertVisible}
+        message={"Are you sure you want to delete this skin type?"}
+        description="This action cannot be undone"
+        onConfirm={() => { handleDeleteSkinType() }}
+      />
     </div>
   );
 }

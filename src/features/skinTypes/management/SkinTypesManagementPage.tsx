@@ -1,15 +1,17 @@
 "use client"
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { Filter, Plus } from "lucide-react";
-import SearchBar from "@/components/layout/SearchBar";
 import SkinTypesTable from "./SkinTypesTable";
-import { Pagination } from "@/components/layout/Pagination";
-import { ISkinType } from "@/interfaces/skinType.interface";
+import { ISkinType, IAddEditSkinType } from "@/interfaces/skinType.interface";
+import skinTypeApi from "@/lib/api/skinType.api";
+import { toast } from "sonner";
+import AddEditSkinTypeDialog from "../shared/AddEditSkinTypeDialog";
+import AlertDialog from "@/components/layout/AlertDialog";
 
 const mockSkinTypes: ISkinType[] = [
   {
@@ -58,27 +60,82 @@ const mockSkinTypes: ISkinType[] = [
 
 export default function SkinTypesManagementPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const [loading, setLoading] = useState(false);
 
-  const page = Number(searchParams.get("page") || 1) || 1;
-  const searchQuery = searchParams.get("q") || "";
-  const minTotal = Number(searchParams.get("minTotal") || 0) || 0;
-  const maxTotal = Number(searchParams.get("maxTotal") || 0) || 0;
-  const status = searchParams.get("status") || "";
-
-  const [limit, setLimit] = useState(7);
   const [data, setData] = useState<any[]>([]);
-  const [total, setTotal] = useState(0);
+  const [selected, setSelected] = useState<ISkinType | null>(null);
+  const [isAddEditDialogOpen, setIsAddEditDialogOpen] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
 
   const fetchSkinTypes = async () => {
+    setLoading(true);
 
+    try {
+      const res = await skinTypeApi.fetchAllSkinTypes();
+      setData(res);
+    } catch (error) {
+      toast.error("Fetch skin types failed:" + error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreateSkinType = async (createData: IAddEditSkinType) => {
+    setLoading(true)
+
+    const { _id, ...payload } = createData;
+    try {
+      const res = await skinTypeApi.createSkinType(payload);
+
+      setSelected(null);
+      setIsAddEditDialogOpen(false);
+      fetchSkinTypes();
+    } catch (error) {
+      toast.error("Create skin type failed:" + error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdateSkinType = async (updateData: IAddEditSkinType) => {
+    const { _id, ...payload } = updateData;
+    if (!_id) return;
+
+    setLoading(true)
+
+    try {
+      const res = await skinTypeApi.updateSkinType(_id, payload);
+
+      setSelected(null);
+      setIsAddEditDialogOpen(false);
+      fetchSkinTypes();
+    } catch (error) {
+      toast.error("Create skin type failed:" + error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteSkinType = async () => {
+    if (!selected) return;
+    setLoading(true)
+
+    try {
+      const res = await skinTypeApi.deleteSkinType(selected._id);
+
+      setSelected(null);
+      setAlertVisible(false);
+      fetchSkinTypes();
+    } catch (error) {
+      toast.error("Delete skin type failed:" + error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     fetchSkinTypes();
-    setData(mockSkinTypes.slice(0, limit)) //sau khi fetch data thật thì xóa dòng này đi
-    setTotal(mockSkinTypes.length)
-  }, [page, limit, searchQuery, minTotal, maxTotal, status]);
+  }, []);
 
   return (
     <div className="px-8 py-6 space-y-8">
@@ -88,7 +145,10 @@ export default function SkinTypesManagementPage() {
         </h1>
         <div className="flex items-center gap-2">
           <Button
-            onClick={() => { router.push("skin-types/new") }}
+            onClick={() => {
+              setSelected(null)
+              setIsAddEditDialogOpen(true)
+            }}
           >
             <Plus className="w-4 h-4 mr-2" />
             Add New Skin Type
@@ -97,26 +157,41 @@ export default function SkinTypesManagementPage() {
       </div>
 
       <Card>
-        <CardHeader>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <SearchBar placeholder="Search skin types..." willUpdateQuery className="w-96" />
-
-          </div>
-        </CardHeader>
-
         <CardContent>
           <Suspense fallback={<Spinner />}>
             <SkinTypesTable
               data={data}
-              onViewProducts={(id) => { router.push(`skin-types/${id}`) }}
-              onEdit={(id) => { router.push(`skin-types/${id}/edit`) }}
+              onViewProducts={(id) => { }}
+              onEdit={(item) => {
+                setSelected(item)
+                setIsAddEditDialogOpen(true);
+              }}
+              onDelete={(item) => {
+                setSelected(item)
+                setAlertVisible(true);
+              }}
             />
           </Suspense>
 
-          <Pagination total={total} page={page} limit={limit} onLimitChange={setLimit} item="skin type" />
-
         </CardContent>
       </Card>
+
+      <AddEditSkinTypeDialog
+        loading={loading}
+        initialData={selected}
+        open={isAddEditDialogOpen}
+        setOpen={setIsAddEditDialogOpen}
+        onCreate={(payload) => handleCreateSkinType(payload)}
+        onUpdate={(payload) => handleUpdateSkinType(payload)}
+      />
+
+      <AlertDialog
+        visible={alertVisible}
+        onVisibleChange={setAlertVisible}
+        message={"Are you sure you want to delete this skin type?"}
+        description="This action cannot be undone"
+        onConfirm={() => { handleDeleteSkinType() }}
+      />
     </div>
   );
 }

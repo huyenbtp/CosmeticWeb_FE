@@ -5,3 +5,9 @@ export interface ISkinType {
   status: string;
   total_products: number;
 }
+
+export interface IAddEditSkinType {
+  _id?: string;
+  name: string;
+  description: string;
+}

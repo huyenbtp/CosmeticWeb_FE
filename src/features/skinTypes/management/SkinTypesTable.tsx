@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Eye, Edit, } from "lucide-react";
+import { Eye, Edit, Trash2, } from "lucide-react";
 import { ISkinType } from "@/interfaces/skinType.interface";
 
 export function getStatusStyle(status: string) {
@@ -17,10 +17,12 @@ export default function SkinTypesTable({
   data,
   onViewProducts,
   onEdit,
+  onDelete,
 }: {
   data: ISkinType[];
   onViewProducts: (id: string) => void;
-  onEdit: (id: string) => void;
+  onEdit: (item: ISkinType) => void;
+  onDelete: (item: ISkinType) => void;
 }) {
 
   return (
@@ -29,8 +31,7 @@ export default function SkinTypesTable({
         <TableRow>
           <TableHead>Skin Type Name</TableHead>
           <TableHead>Description</TableHead>
-          <TableHead>Total Products</TableHead>
-          <TableHead>Status</TableHead>
+          <TableHead className="text-center">Total Products</TableHead>
           <TableHead className="text-center">Actions</TableHead>
         </TableRow>
       </TableHeader>
@@ -42,31 +43,16 @@ export default function SkinTypesTable({
               {skinType.name}
             </TableCell>
 
-            <TableCell className="w-20/100 font-medium">
+            <TableCell className="w-40/100">
               {skinType.description}
             </TableCell>
 
-            <TableCell className="w-20/100 font-medium">
+            <TableCell className="w-20/100 font-medium text-center">
               {skinType.total_products}
             </TableCell>
 
-            <TableCell className="w-20/100 font-medium">
-              <Select
-                defaultValue={skinType.status}
-                value={skinType.status}
-                onValueChange={() => { }}
-              >
-                <SelectTrigger size="xs" className={`w-fit text-xs shadow-none ${getStatusStyle(skinType.status)}`}>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="archived">Archived</SelectItem>
-                </SelectContent>
-              </Select>
-            </TableCell>
-
-            <TableCell className="text-center">
+            <TableCell className="text-center space-x-2">
+              {/**
               <Button
                 variant="ghost"
                 size="sm"
@@ -75,20 +61,29 @@ export default function SkinTypesTable({
               >
                 <Eye className="w-4 h-4" />
               </Button>
+              */}
               <Button
                 variant="ghost"
                 size="sm"
-                title="Edit SkinType"
-                onClick={() => { onEdit(skinType._id) }}
+                title="Edit Skin Type"
+                onClick={() => { onEdit(skinType) }}
               >
                 <Edit className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                title="Delete Skin Type"
+                onClick={() => { onDelete(skinType) }}
+              >
+                <Trash2 className="w-4 h-4" />
               </Button>
             </TableCell>
           </TableRow>
         ))) : (
           <TableRow>
             <TableCell colSpan={7} align="center">
-              Không có dữ liệu
+              No data available
             </TableCell>
           </TableRow>
         )}
