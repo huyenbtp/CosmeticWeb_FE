@@ -93,6 +93,7 @@ export default function TagsManagementPage() {
     try {
       const res = await tagApi.createTag(payload);
 
+      toast.success("Create tag successfully");
       setSelected(null);
       setIsAddEditDialogOpen(false);
       fetchTags();
@@ -112,23 +113,42 @@ export default function TagsManagementPage() {
     try {
       const res = await tagApi.updateTag(_id, payload);
 
+      toast.success("Update successfully");
       setSelected(null);
       setIsAddEditDialogOpen(false);
       fetchTags();
     } catch (error) {
-      toast.error("Create tag failed:" + error);
+      toast.error("Update failed:" + error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDeleteSkinType = async () => {
+  const handleUpdateStatus = async (id: string, status: TagStatus) => {
+    if (!id || !status) return;
+
+    setLoading(true)
+
+    try {
+      const res = await tagApi.updateStatus(id, status);
+      
+      toast.success("Update status successfully");
+      fetchTags();
+    } catch (error) {
+      toast.error("Update status failed:" + error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteTag = async () => {
     if (!selected) return;
     setLoading(true)
 
     try {
       const res = await tagApi.deleteTag(selected._id);
 
+      toast.success("Delete successfully");
       setSelected(null);
       setAlertVisible(false);
       fetchTags();
@@ -180,6 +200,7 @@ export default function TagsManagementPage() {
                 setSelected(item)
                 setIsAddEditDialogOpen(true);
               }}
+              onChangeStatus={handleUpdateStatus}
               onDelete={(item) => {
                 setSelected(item)
                 setAlertVisible(true);
@@ -204,9 +225,9 @@ export default function TagsManagementPage() {
       <AlertDialog
         visible={alertVisible}
         onVisibleChange={setAlertVisible}
-        message={"Are you sure you want to delete this skin type?"}
+        message={"Are you sure you want to delete this tag?"}
         description="This action cannot be undone"
-        onConfirm={() => { handleDeleteSkinType() }}
+        onConfirm={() => { handleDeleteTag() }}
       />
     </div>
   );

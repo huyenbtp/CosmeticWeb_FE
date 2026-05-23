@@ -37,18 +37,18 @@ export default function SkinTypesTable({
       </TableHeader>
 
       <TableBody>
-        {data.length > 0 ? (data.map((skinType) => (
-          <TableRow key={skinType._id}>
+        {data.length > 0 ? (data.map((item) => (
+          <TableRow key={item._id}>
             <TableCell className="w-20/100 font-medium">
-              {skinType.name}
+              {item.name}
             </TableCell>
 
             <TableCell className="w-40/100">
-              {skinType.description}
+              {item.description}
             </TableCell>
 
             <TableCell className="w-20/100 font-medium text-center">
-              {skinType.total_products}
+              {item.total_products}
             </TableCell>
 
             <TableCell className="text-center space-x-2">
@@ -66,7 +66,7 @@ export default function SkinTypesTable({
                 variant="ghost"
                 size="sm"
                 title="Edit Skin Type"
-                onClick={() => { onEdit(skinType) }}
+                onClick={() => { onEdit(item) }}
               >
                 <Edit className="w-4 h-4" />
               </Button>
@@ -74,7 +74,7 @@ export default function SkinTypesTable({
                 variant="ghost"
                 size="sm"
                 title="Delete Skin Type"
-                onClick={() => { onDelete(skinType) }}
+                onClick={() => { onDelete(item) }}
               >
                 <Trash2 className="w-4 h-4" />
               </Button>

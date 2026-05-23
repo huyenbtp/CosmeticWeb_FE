@@ -4,6 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Eye, Edit, Trash2, } from "lucide-react";
 import { ITag } from "@/interfaces/tag.interface";
+import { TagStatus } from "@/lib/api/tag.api";
 
 export function getStatusStyle(status: string) {
   if (status === "active") {
@@ -17,11 +18,13 @@ export default function TagsTable({
   data,
   onViewProducts,
   onEdit,
+  onChangeStatus,
   onDelete,
 }: {
   data: ITag[];
   onViewProducts: (id: string) => void;
   onEdit: (item: ITag) => void;
+  onChangeStatus: (id: string, status: TagStatus) => void;
   onDelete: (item: ITag) => void;
 }) {
 
@@ -37,23 +40,23 @@ export default function TagsTable({
       </TableHeader>
 
       <TableBody>
-        {data.length > 0 ? (data.map((tag) => (
-          <TableRow key={tag._id}>
+        {data.length > 0 ? (data.map((item) => (
+          <TableRow key={item._id}>
             <TableCell className="w-25/100 font-medium">
-              {tag.name}
+              {item.name}
             </TableCell>
 
             <TableCell className="w-40/100 font-medium text-center">
-              {tag.total_products}
+              {item.total_products}
             </TableCell>
 
             <TableCell className="w-15/100 font-medium">
               <Select
-                defaultValue={tag.status}
-                value={tag.status}
-                onValueChange={() => { }}
+                defaultValue={item.status}
+                value={item.status}
+                onValueChange={(value: TagStatus) => { onChangeStatus(item._id, value) }}
               >
-                <SelectTrigger size="xs" className={`w-fit text-xs shadow-none ${getStatusStyle(tag.status)}`}>
+                <SelectTrigger size="xs" className={`w-fit text-xs shadow-none ${getStatusStyle(item.status)}`}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -78,7 +81,7 @@ export default function TagsTable({
                 variant="ghost"
                 size="sm"
                 title="Edit tag"
-                onClick={() => { onEdit(tag) }}
+                onClick={() => { onEdit(item) }}
               >
                 <Edit className="w-4 h-4" />
               </Button>
@@ -86,7 +89,7 @@ export default function TagsTable({
                 variant="ghost"
                 size="sm"
                 title="Delete tag"
-                onClick={() => { onDelete(tag) }}
+                onClick={() => { onDelete(item) }}
               >
                 <Trash2 className="w-4 h-4" />
               </Button>

@@ -87,6 +87,7 @@ export default function SkinTypesManagementPage() {
     try {
       const res = await skinTypeApi.createSkinType(payload);
 
+      toast.success("Create skin type successfully");
       setSelected(null);
       setIsAddEditDialogOpen(false);
       fetchSkinTypes();
@@ -106,11 +107,12 @@ export default function SkinTypesManagementPage() {
     try {
       const res = await skinTypeApi.updateSkinType(_id, payload);
 
+      toast.success("Update successfully");
       setSelected(null);
       setIsAddEditDialogOpen(false);
       fetchSkinTypes();
     } catch (error) {
-      toast.error("Create skin type failed:" + error);
+      toast.error("Update failed:" + error);
     } finally {
       setLoading(false);
     }
@@ -123,6 +125,7 @@ export default function SkinTypesManagementPage() {
     try {
       const res = await skinTypeApi.deleteSkinType(selected._id);
 
+      toast.success("Delete skin type successfully");
       setSelected(null);
       setAlertVisible(false);
       fetchSkinTypes();

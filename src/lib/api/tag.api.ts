@@ -32,6 +32,10 @@ const tagApi = {
     return axios.put(`/api/tags/${id}`, payload);
   },
   
+  updateStatus: async (id: string, status: TagStatus): Promise<ITag> => {
+    return axios.patch(`/api/tags/${id}/status`, { status });
+  },
+
   deleteTag: async (id: string): Promise<boolean> => {
     return axios.delete(`/api/tags/${id}`);
   },
