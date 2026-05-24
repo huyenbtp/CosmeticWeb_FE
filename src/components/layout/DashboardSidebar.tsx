@@ -86,9 +86,29 @@ const navigationItems = {
   ],
   warehouse_manager: [
     { href: "/warehouse/dashboard", label: "Dashboard", icon: Home },
+    {
+      label: "Inventory",
+      icon: Archive,
+      children: [
+        { href: "/warehouse/inventory/import-history", label: "Import", icon: ArrowDownToLine },
+        { href: "/warehouse/inventory/export-history", label: "Export", icon: ArrowUpToLine },
+        { href: "/warehouse/inventory/batches", label: "Batches", icon: Package },
+      ],
+    },
+    { href: "/warehouse/stock-reports", label: "Stock Reports", icon: BarChart3 },
   ],
   order_processing: [
     { href: "/order-processing/dashboard", label: "Dashboard", icon: Home },
+    { href: "/order-processing/orders", label: "Orders", icon: ShoppingCart },
+    {
+      label: "Inventory",
+      icon: Archive,
+      children: [
+        { href: "/order-processing/inventory/import-history", label: "Import", icon: ArrowDownToLine },
+        { href: "/order-processing/inventory/export-history", label: "Export", icon: ArrowUpToLine },
+        { href: "/order-processing/inventory/batches", label: "Batches", icon: Package },
+      ],
+    },
   ],
 };
 

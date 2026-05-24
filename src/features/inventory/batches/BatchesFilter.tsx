@@ -9,7 +9,13 @@ import { BatchExpiredStatus, BatchStockStatus } from "@/lib/api/batch.api";
 export function getBatchExpiredStatusBadge(status: string, size: "xs" | "sm" = "xs") {
   const style = `text-${size}`;
 
-  if (status === "less-than-1-month") {
+  if (status === "expired") {
+    return (
+      <Badge className={cn("bg-error text-error-foreground", style)}>
+        Expired
+      </Badge>
+    )
+  } else if (status === "less-than-1-month") {
     return (
       <Badge className={cn("bg-error1 text-error1-foreground", style)}>
         Less than 1 month
@@ -60,7 +66,7 @@ export function getBatchStockStatusBadge(status: string, size: "xs" | "sm" = "xs
   }
 };
 
-export default function ImportsFilter() {
+export default function BatchesFilter() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -91,7 +97,7 @@ export default function ImportsFilter() {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All status</SelectItem>
-          {["less-than-1-month", "1-3-months", "3-6-months"].map(value => (
+          {["expired", "less-than-1-month", "1-3-months", "3-6-months"].map(value => (
             <SelectItem key={value} value={value}>{getBatchExpiredStatusBadge(value)}</SelectItem>
           ))}
         </SelectContent>
