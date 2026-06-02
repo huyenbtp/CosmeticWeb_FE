@@ -7,7 +7,7 @@ import { IAddEditImport, IImportDetail } from "@/interfaces/import.interface";
 import { IImportItemUI } from "@/interfaces/importItem.interface";
 import AddEditImportItemDialog from "./AddImportItemDialog";
 import { Textarea } from "@/components/ui/textarea";
-import ImportItemsTable from "../create/ImportItemsTable";
+import ImportItemsTable from "./ImportItemsTable";
 
 const NullImport: IAddEditImport = {
   items: [],
@@ -48,10 +48,15 @@ export default function ImportOrderForm({
     if (initialData) {
       setCreator(initialData.createdStaff)
       setItems(initialData.items.map(item => {
-        const { _id, import_id, ...rest } = item;
+        const { _id, import_id, batch, ...rest } = item;
         return (
           {
             product_id: item.product._id,
+            batch_id: item.batch._id,
+            batch: {
+              ...batch,
+              product: item.product
+            },
             ...rest,
           }
         )
@@ -62,18 +67,15 @@ export default function ImportOrderForm({
   }, [initialData]);
 
   const handleAddItem = (
-    selectedProduct: any,
-    batch_code: string,
+    selectedBatch: any,
     quantity: number,
     unitCost: number,
-    mfg_date: string,
-    exp_date: string
   ) => {
-    const existingItem = items.find(item => item.product_id === selectedProduct._id);
+    const existingItem = items.find(item => item.batch_id === selectedBatch._id);
 
     if (existingItem) {
       setItems(items.map(item =>
-        item.product._id === selectedProduct._id
+        item.batch_id === selectedBatch._id
           ? {
             ...item,
             quantity: item.quantity + quantity,
@@ -85,13 +87,11 @@ export default function ImportOrderForm({
       setItems(prev => [
         ...prev,
         {
-          product_id: selectedProduct._id,
-          batch_code,
+          batch_id: selectedBatch._id,
+          product_id: selectedBatch.product_id,
           quantity,
           unit_price: unitCost,
-          mfg_date,
-          exp_date,
-          product: selectedProduct,
+          batch: selectedBatch,
         }
       ]);
     }
@@ -99,21 +99,9 @@ export default function ImportOrderForm({
     setIsAddItemOpen(false);
   };
 
-  const handleUpdateBatchCode = (id: string, code: string) => {
-    setItems(items.map(item => {
-      if (item.product_id === id) {
-        return {
-          ...item,
-          batch_code: code,
-        };
-      }
-      return item;
-    }));
-  };
-
   const handleUpdateQuantity = (id: string, newQuantity: number) => {
     setItems(items.map(item => {
-      if (item.product_id === id) {
+      if (item.batch_id === id) {
         return {
           ...item,
           quantity: newQuantity,
@@ -125,7 +113,7 @@ export default function ImportOrderForm({
 
   const handleUpdateUnitCost = (id: string, newCost: number) => {
     setItems(items.map(item => {
-      if (item.product_id === id) {
+      if (item.batch_id === id) {
         return {
           ...item,
           unit_price: newCost,
@@ -135,32 +123,8 @@ export default function ImportOrderForm({
     }));
   };
 
-  const handleUpdateMfgDate = (id: string, newMfg: string) => {
-    setItems(items.map(item => {
-      if (item.product_id === id) {
-        return {
-          ...item,
-          mfg_date: newMfg,
-        };
-      }
-      return item;
-    }));
-  };
-
-  const handleUpdateExpDate = (id: string, newExp: string) => {
-    setItems(items.map(item => {
-      if (item.product_id === id) {
-        return {
-          ...item,
-          exp_date: newExp,
-        };
-      }
-      return item;
-    }));
-  };
-
-  const handleRemoveItem = (product_id: string) => {
-    setItems(items.filter(item => item.product_id !== product_id));
+  const handleRemoveItem = (batch_id: string) => {
+    setItems(items.filter(item => item.batch_id !== batch_id));
   };
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -253,11 +217,8 @@ export default function ImportOrderForm({
               <>
                 <ImportItemsTable
                   data={items}
-                  handleUpdateBatchCode={handleUpdateBatchCode}
                   handleUpdateQuantity={handleUpdateQuantity}
                   handleUpdateUnitCost={handleUpdateUnitCost}
-                  handleUpdateMfgDate={handleUpdateMfgDate}
-                  handleUpdateExpDate={handleUpdateExpDate}
                   handleRemoveItem={handleRemoveItem}
                 />
 

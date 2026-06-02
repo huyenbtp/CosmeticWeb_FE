@@ -4,49 +4,28 @@ import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogT
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
-import { ChevronRight, Plus } from "lucide-react";
+import { ChevronRight, Plus, Search } from "lucide-react";
 import { ImageWithFallback } from "@/components/layout/ImageWithFallback";
-import productApi from "@/lib/api/product.api";
-import dayjs from "dayjs";
+import batchApi from "@/lib/api/batch.api";
 
-export interface IFetchedProduct {
+export interface IFetchedBatch {
   _id: string;
-  name: string;
-  sku: string;
-  image: string;
+  batch_number: string;
+  product: {
+    _id: string;
+    name: string;
+    sku: string;
+    image: string;
+  }
 }
-
-const mockProducts: IFetchedProduct[] = [
-  {
-    _id: "1",
-    name: "Kem chống nắng Anessa Perfect UV",
-    sku: "SUN-ANE-251204215107",
-    image: "https://picsum.photos/200/300?random=1",
-  },
-  {
-    _id: "2",
-    name: "Sữa rửa mặt Innisfree Green Tea",
-    sku: "CLS-INN-251204215107",
-    image: "https://picsum.photos/200/300?random=2",
-  },
-  {
-    _id: "3",
-    name: "Phấn phủ Fit Me Matte + PorelesPhấn phủ Fit Me Matte + PorelesPhấn phủ Fit Me Matte + Poreles",
-    sku: "MAK-FIT-251204215107",
-    image: "https://picsum.photos/200/300?random=3",
-  },
-];
 
 interface DialogProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   handleAddItem: (
-    selectedProduct: any,
-    batch_code: string,
+    selectedBatch: any,
     quantity: number,
     unitCost: number,
-    mfg_date: string,
-    exp_date: string
   ) => void;
 }
 
@@ -55,21 +34,18 @@ export default function AddEditImportItemDialog({
   setOpen,
   handleAddItem,
 }: DialogProps) {
-  const [selectedProduct, setSelectedProduct] = useState<IFetchedProduct | null>(null);
-  const [batchCode, setBatchCode] = useState("");
+  const [selectedBatch, setSelectedBatch] = useState<IFetchedBatch | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [unitCost, setUnitCost] = useState(0);
-  const [mfgDate, setMfgDate] = useState("");
-  const [expDate, setExpDate] = useState("");
-  const [searchSku, setSearchSku] = useState("");
+  const [searchBatchNumber, setSearchBatchNumber] = useState("");
   const [loading, setLoading] = useState(false);
-  const productFound = selectedProduct ? true : false;
+  const batchFound = selectedBatch ? true : false;
 
-  const fetchProduct = async () => {
+  const fetchBatch = async () => {
     setLoading(true)
     try {
-      const res = await productApi.fetchProductBySKU(searchSku);
-      setSelectedProduct(res ?? null);
+      const res = await batchApi.fetchBatchByBatchNumber(searchBatchNumber);
+      setSelectedBatch(res ?? null);
     } finally {
       setLoading(false)
     }
@@ -77,9 +53,9 @@ export default function AddEditImportItemDialog({
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      if (!searchSku.trim()) return;
+      if (!searchBatchNumber.trim()) return;
 
-      fetchProduct();
+      fetchBatch();
     }
   };
 
@@ -102,44 +78,49 @@ export default function AddEditImportItemDialog({
         <div className="space-y-6 py-6">
           <div className="space-y-1">
             <Label
-              htmlFor="item-product"
+              htmlFor="item-batch"
               className="text-muted-foreground"
             >
-              Product *
+              Batch *
             </Label>
-            <Input
-              value={searchSku}
-              onChange={(e) => setSearchSku(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Enter SKU code to search for product"
-              className="h-12"
-            />
+            <div className="flex items-center gap-1">
+              <Input
+                value={searchBatchNumber}
+                onChange={(e) => setSearchBatchNumber(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Enter batch number to search for batch"
+                className="h-12"
+              />
+              <Button className="w-12 h-12" onClick={() => fetchBatch()}>
+                <Search />
+              </Button>
+            </div>
           </div>
 
           {loading ?
             <Spinner className="size-10 mx-auto" />
-            : productFound ? (
+            : batchFound ? (
               <div className="flex items-center p-2 gap-4 border rounded-md">
                 <ImageWithFallback
-                  src={selectedProduct?.image}
-                  alt={selectedProduct?.name}
+                  src={selectedBatch?.product.image}
+                  alt={selectedBatch?.product.name}
                   className="w-22 h-22 rounded-md"
                 />
                 <div className="flex-1 w-0 truncate space-y-1">
-                  <div className="truncate font-medium">{selectedProduct?.name}</div>
-                  <div className="text-muted-foreground">{selectedProduct?.sku}</div>
+                  <div className="truncate font-medium">{selectedBatch?.product.name}</div>
+                  <div className="text-muted-foreground">{selectedBatch?.product.sku}</div>
                 </div>
               </div>
             ) : (
               <div className="flex flex-1 flex-col items-center py-10 border rounded-md">
-                <div className="text-muted-foreground">Product not found</div>
+                <div className="text-muted-foreground">Batch not found</div>
                 {/**
                     <Button
                       variant="ghost"
                       onClick={() => { }}
                       className="text-primary"
                     >
-                      Add New Product
+                      Add New Batch
                       <ChevronRight />
                     </Button>
                 */}
@@ -148,52 +129,6 @@ export default function AddEditImportItemDialog({
           }
 
           <div className="grid grid-cols-2 gap-6">
-            <div className="space-y-1 col-span-2">
-              <Label
-                htmlFor="batch"
-                className="text-muted-foreground"
-              >
-                Batch Code
-              </Label>
-              <Input
-                id="batch"
-                value={batchCode}
-                onChange={(e) => setBatchCode(e.target.value)}
-                className="h-12"
-              />
-            </div>
-            <div className="space-y-1">
-              <Label
-                htmlFor="mfg"
-                className="text-muted-foreground"
-              >
-                Manufacturing Date
-              </Label>
-              <Input
-                id="mfg"
-                type="date"
-                value={dayjs(mfgDate).format("YYYY-MM-DD")}
-                onChange={(e) => setMfgDate(e.target.value)}
-                className="h-12"
-              />
-            </div>
-
-            <div className="space-y-1">
-              <Label
-                htmlFor="exp"
-                className="text-muted-foreground"
-              >
-                Expiration Date
-              </Label>
-              <Input
-                id="exp"
-                type="date"
-                value={dayjs(expDate).format("YYYY-MM-DD")}
-                onChange={(e) => setExpDate(e.target.value)}
-                className="h-12"
-              />
-            </div>
-
             <div className="space-y-1">
               <Label
                 htmlFor="item-quantity"
@@ -254,9 +189,9 @@ export default function AddEditImportItemDialog({
           <Button
             size="lg"
             className="flex-1"
-            disabled={!selectedProduct || quantity < 1 || unitCost < 0}
+            disabled={!selectedBatch || quantity < 1 || unitCost < 0}
             onClick={() => {
-              handleAddItem(selectedProduct, batchCode, quantity, unitCost, mfgDate, expDate);
+              handleAddItem(selectedBatch, quantity, unitCost);
             }}
           >
             Add Item

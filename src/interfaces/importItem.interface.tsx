@@ -6,35 +6,37 @@ export interface IImportItem {
     sku: string;
     name: string;
     image: string;
-  }
-  batch_code: string;
+  };
+  batch: {
+    _id: string;
+    batch_number: string;
+    batch_code: string;
+  };
   quantity: number;
   unit_price: number;
-  mfg_date: string;
-  exp_date: string;
 }
 
 export interface IAddEditImportItem {
-  product_id: string;
-  batch_code: string;
+  batch_id: string;
   quantity: number;
   unit_price: number;
-  mfg_date: string;
-  exp_date: string;
 }
 
 export interface IImportItemUI {
+  batch_id: string;
   product_id: string;
-  batch_code: string;
   quantity: number;
   unit_price: number;
-  mfg_date: string;
-  exp_date: string;
 
-  product: {
+  batch: {
     _id: string;
-    sku: string;
-    name: string;
-    image: string;
-  }
+    batch_number: string;
+    batch_code: string;
+    product: {
+      _id: string;
+      sku: string;
+      name: string;
+      image: string;
+    };
+  };
 }

@@ -20,12 +20,9 @@ export interface FetchImportsParams {
 
 export interface ImportPayload {
   items: {
-    product_id: string;
-    batch_code: string;
+    batch_id: string;
     quantity: number;
     unit_price: number;
-    mfg_date: string;
-    exp_date: string;
   }[];
   notes: string;
 }

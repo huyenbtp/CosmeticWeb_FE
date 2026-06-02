@@ -21,12 +21,11 @@ export default function ImportItemsCard({
             <TableRow>
               <TableHead>Product</TableHead>
               <TableHead>Sku</TableHead>
+              <TableHead>Batch Number</TableHead>
               <TableHead>Batch Code</TableHead>
               <TableHead className="text-center">Qty</TableHead>
               <TableHead className="text-right">Unit Cost</TableHead>
               <TableHead className="text-right pr-6">Total</TableHead>
-              <TableHead className="text-center">Mfg Date</TableHead>
-              <TableHead className="text-center">Exp Date</TableHead>
             </TableRow>
           </TableHeader>
 
@@ -46,12 +45,16 @@ export default function ImportItemsCard({
                   </div>
                 </TableCell>
 
-                <TableCell className="w-2/11 text-muted-foreground pr-6">
+                <TableCell className="w-1/11 text-muted-foreground pr-6">
                   {item.product.sku}
                 </TableCell>
 
                 <TableCell className="w-2/11 pr-6">
-                  {item.batch_code}
+                  {item.batch.batch_number}
+                </TableCell>
+
+                <TableCell className="w-2/11 pr-6">
+                  {item.batch.batch_code}
                 </TableCell>
 
                 <TableCell className="w-1/11 text-center px-6">
@@ -64,15 +67,6 @@ export default function ImportItemsCard({
 
                 <TableCell className="w-1/9 text-right font-medium pl-6">
                   {(item.unit_price * item.quantity).toLocaleString()} đ
-                </TableCell>
-
-                <TableCell className="w-1/11 px-6">
-                  {item.mfg_date ? dayjs(item.mfg_date).format("DD/MM/YYYY") : "N/A"}
-                </TableCell>
-
-
-                <TableCell className="w-1/11 px-6">
-                  {item.exp_date ? dayjs(item.exp_date).format("DD/MM/YYYY") : "N/A"}
                 </TableCell>
               </TableRow>
             ))}

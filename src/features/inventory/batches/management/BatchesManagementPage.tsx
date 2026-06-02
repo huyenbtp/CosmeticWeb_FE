@@ -10,10 +10,12 @@ import SearchBar from "@/components/layout/SearchBar";
 import BatchesFilter from "./BatchesFilter";
 import BatchesTable from "./BatchesTable";
 import { Pagination } from "@/components/layout/Pagination";
-import { IBatch } from "@/interfaces/batch.interface";
+import { IAddEditBatch, IBatch } from "@/interfaces/batch.interface";
 import batchApi, { BatchExpiredStatus, BatchStockStatus } from "@/lib/api/batch.api";
 import { updateQueryParams } from "@/lib/utils";
 import { toast } from "sonner";
+import AlertDialog from "@/components/layout/AlertDialog";
+import AddEditBatchDialog from "../shared/AddEditBatchDialog";
 
 const mockBatches = [
   {
@@ -131,6 +133,10 @@ export default function BatchesManagementPage() {
   const expiredStatus = searchParams.get("expiredStatus") || "";
   const stockStatus = searchParams.get("stockStatus") || "";
 
+  const [selected, setSelected] = useState<IBatch | null>(null);
+  const [isAddEditDialogOpen, setIsAddEditDialogOpen] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+
   const fetchBatches = async () => {
     setLoading(true);
 
@@ -144,8 +150,8 @@ export default function BatchesManagementPage() {
       });
       setData(res.data);
       setTotal(res.pagination?.total ?? 0);
-    } catch (error) {
-      toast.error("Fetch batches failed:" + error);
+    } catch (error: any) {
+      toast.error("Fetch batches failed: " + error.response.data.message);
     } finally {
       setLoading(false);
     }
@@ -162,22 +168,77 @@ export default function BatchesManagementPage() {
 
   }, [page, limit, searchQuery, expiredStatus, stockStatus]);
 
+  const handleCreateBatch = async (payload: IAddEditBatch) => {
+    setLoading(true)
+
+    try {
+      const res = await batchApi.createBatch(payload);
+
+      toast.success("Create batch successfully");
+      setSelected(null);
+      setIsAddEditDialogOpen(false);
+      fetchBatches();
+    } catch (error: any) {
+      toast.error("Create batch failed: " + error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdateBatch = async (payload: IAddEditBatch) => {
+    if (!selected) return;
+    setLoading(true)
+
+    try {
+      const res = await batchApi.updateBatch(selected._id, payload);
+
+      toast.success("Update successfully");
+      setSelected(null);
+      setIsAddEditDialogOpen(false);
+      fetchBatches();
+    } catch (error: any) {
+      toast.error("Update failed: " + error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteBatch = async () => {
+    if (!selected) return;
+    setLoading(true)
+
+    try {
+      const res = await batchApi.deleteBatch(selected._id);
+
+      toast.success("Delete successfully");
+      setSelected(null);
+      setAlertVisible(false);
+      fetchBatches();
+    } catch (error: any) {
+      toast.error("Delete batch failed: " + error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="px-8 py-6 space-y-8">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">
           Inventory Batches Management
         </h1>
-        {/** 
+
         <div className="flex items-center gap-2">
           <Button
-            onClick={() => { router.push("batch-history/new") }}
+            onClick={() => {
+              setSelected(null)
+              setIsAddEditDialogOpen(true)
+            }}
           >
             <Plus className="w-4 h-4 mr-2" />
             Add New Batch
           </Button>
         </div>
-        */}
       </div>
 
       <Card>
@@ -196,6 +257,14 @@ export default function BatchesManagementPage() {
                 loading={loading}
                 data={data || []}
                 onView={(id) => { router.push(`batches/${id}`) }}
+                onEdit={(item) => {
+                  setSelected(item)
+                  setIsAddEditDialogOpen(true)
+                }}
+                onDelete={(item) => {
+                  setSelected(item)
+                  setAlertVisible(true)
+                }}
               />
             </div>
           </Suspense>
@@ -204,6 +273,22 @@ export default function BatchesManagementPage() {
 
         </CardContent>
       </Card>
+
+      <AddEditBatchDialog
+        initialData={selected}
+        open={isAddEditDialogOpen}
+        setOpen={setIsAddEditDialogOpen}
+        onCreate={handleCreateBatch}
+        onUpdate={handleUpdateBatch}
+      />
+
+      <AlertDialog
+        visible={alertVisible}
+        onVisibleChange={setAlertVisible}
+        message={"Are you sure you want to delete this batch?"}
+        description="This action cannot be undone. Only unused batches can be deleted."
+        onConfirm={() => {handleDeleteBatch() }}
+      />
     </div>
   );
 }

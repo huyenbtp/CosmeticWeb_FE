@@ -1,4 +1,5 @@
 import { IEditStaff, IStaff, IStaffDetail } from "@/interfaces/staff.interface";
+import { IUser } from "@/interfaces/user.interface";
 import axios from "@/lib/axios";
 
 export type StaffStatus = "active" | "on_leave" | "terminated";
@@ -49,7 +50,7 @@ const staffApi = {
     return axios.get(`/api/staffs/admin-edit/${user_id}`);
   },
 
-  createStaff: async (payload: CreateStaffPayload): Promise<IStaff> => {
+  createStaff: async (payload: CreateStaffPayload): Promise<IUser> => {
     const formData = new FormData();
 
     Object.entries(payload).forEach(([key, value]) => {
@@ -65,7 +66,7 @@ const staffApi = {
     return axios.post("/api/staffs", formData);
   },
 
-  updateStaff: async (id: string, payload: UpdateStaffPayload): Promise<IStaff> => {
+  updateStaff: async (id: string, payload: UpdateStaffPayload): Promise<IUser> => {
     const formData = new FormData();
 
     Object.entries(payload).forEach(([key, value]) => {
