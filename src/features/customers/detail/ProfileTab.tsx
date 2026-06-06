@@ -117,7 +117,7 @@ export default function ProfileTab({
             <div>
               <Label className="text-sm text-muted-foreground">Last Order</Label>
               <p className="font-medium">
-                {dayjs(data.lastOrder).format("MMMM D, YYYY")}
+                {data.lastOrder ? dayjs(data.lastOrder).format("MMMM D, YYYY") : "No information available"}
               </p>
             </div>
           </div>

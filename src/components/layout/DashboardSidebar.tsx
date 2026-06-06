@@ -26,6 +26,12 @@ import {
   ArrowUpToLine,
   BarChart3,
   Star,
+  ClipboardList,
+  Clock,
+  CircleCheck,
+  PackageOpen,
+  Truck,
+  XCircle,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -99,14 +105,13 @@ const navigationItems = {
   ],
   order_processing: [
     { href: "/order-processing/dashboard", label: "Dashboard", icon: Home },
-    { href: "/order-processing/orders", label: "Orders", icon: ShoppingCart },
+    { href: "/order-processing/orders", label: "Order Processing", icon: ClipboardList },
     {
       label: "Inventory",
       icon: Archive,
       children: [
-        { href: "/order-processing/inventory/import-history", label: "Import", icon: ArrowDownToLine },
-        { href: "/order-processing/inventory/export-history", label: "Export", icon: ArrowUpToLine },
         { href: "/order-processing/inventory/batches", label: "Batches", icon: Package },
+        { href: "/order-processing/inventory/export-history", label: "Export", icon: ArrowUpToLine },
       ],
     },
   ],
@@ -223,7 +228,7 @@ export default function DashboardSidebar({ role }: DashboardSidebarProps) {
             isCollapsed ? "justify-center" : "justify-between"
           )}
         >
-          {!isCollapsed && <span className="text-2xl font-semibold ml-3">Hello</span>}
+          {!isCollapsed && <span className="text-2xl font-semibold ml-3">Skintify</span>}
           <button
             className="rounded-full p-2.5 hover:bg-sidebar-hover"
             onClick={() => setIsCollapsed(!isCollapsed)}

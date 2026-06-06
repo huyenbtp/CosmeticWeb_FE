@@ -1,5 +1,7 @@
-import OrdersManagementPage from "@/features/orders/management/OrdersManagementPage";
+import OrderProcessingPage from "@/features/orders/processing/OrderProcessingPage";
 
 export default function Page() {
-  return <OrdersManagementPage />;
+  return (
+    <OrderProcessingPage />
+  );
 }

@@ -49,7 +49,7 @@ export default function ExportItemsCard({
                 </TableCell>
 
                 <TableCell className="w-2/12 pr-6">
-                  {item.batch.batch_code}
+                  {item.batch.batch_number}
                 </TableCell>
 
                 <TableCell className="w-1/12 text-center px-6">

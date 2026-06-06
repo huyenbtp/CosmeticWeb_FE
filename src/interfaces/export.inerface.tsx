@@ -26,6 +26,7 @@ export interface IExportDetail {
   products_updated: number;
   items_exported: number;
   total_amount: number;
+  status: string;
   type: string;
   order: {
     _id: string;

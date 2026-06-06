@@ -167,8 +167,6 @@ export default function OrdersManagementPage() {
 
   useEffect(() => {
     fetchOrders();
-    setData(mockOrders.slice(0, limit)) //sau khi fetch data thật thì xóa dòng này đi
-    setTotal(mockOrders.length)
   }, [page, limit, searchQuery, fromDate, toDate, payment_method, status]);
 
   return (

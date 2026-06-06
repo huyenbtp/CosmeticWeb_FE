@@ -9,7 +9,7 @@ export interface IExportItem {
   }
   batch: {
     _id: string;
-    batch_code: string;
+    batch_number: string;
   };
   quantity: number;
   unit_price: number;
@@ -20,13 +20,22 @@ export interface IAddEditExportItem {
   batch_id: string;
   quantity: number;
   unit_price: number;
+  notes: string;
 }
 
 export interface IExportItemUI {
   product_id: string;
-  batch_code: string;
-  quantity: number;
+
+  suggested_batch_id: string;
+  suggested_batch_number: string;
+  suggested_quantity: number;
+
+  actual_batch_id: string;
+  actual_batch_number: string;
+  actual_quantity: number;
+
   unit_price: number;
+  notes: string;
 
   product: {
     _id: string;

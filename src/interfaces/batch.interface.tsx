@@ -35,3 +35,13 @@ export interface IBatchUI {
     image: string;
   }
 }
+
+export interface ICheckStockBatch {
+  product_id: string;
+  batches: {
+    _id: string;
+    batch_number: string;
+    exp_date: string;
+    remaining_qty: number;
+  }[]
+}

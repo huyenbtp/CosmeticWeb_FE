@@ -7,6 +7,15 @@ import { DateRangePicker } from "@/components/layout/DateRangePicker";
 import { DateRange } from "react-day-picker";
 import { getStatusIcon } from "../detail/StatusTab";
 
+export const getPaymentMethodName = (method: string) => {
+  switch (method) {
+    case "cod":
+      return "COD"
+    case "bank_transfer":
+      return "Bank Transfer"
+  }
+}
+
 export function getOrderPaymentStatusBadge(status: string) {
   if (status === "paid") {
     return <Badge className="bg-success1 text-success1-foreground">Paid</Badge>
@@ -124,8 +133,9 @@ export default function OrdersFilter() {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All payment method</SelectItem>
-          <SelectItem value="cod">COD</SelectItem>
-          <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
+          {["cod", "bank_transfer"].map(value => (
+            <SelectItem key={value} value={value}>{getPaymentMethodName(value)}</SelectItem>
+          ))}
         </SelectContent>
       </Select>
 
