@@ -1,3 +1,5 @@
-export default function AdminDashboard() {
-  return <h1 className="text-2xl font-semibold">Welcome, Admin!</h1>;
+import DashboardPage from "@/features/dashboard/DashboardPage";
+
+export default function Page() {
+  return <DashboardPage />;
 }
