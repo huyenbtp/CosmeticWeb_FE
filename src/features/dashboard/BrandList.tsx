@@ -33,7 +33,7 @@ export default function BrandList({ brands }: Props) {
               {b.name.charAt(0).toUpperCase()}
             </div>
             {/* Tên brand */}
-            <span className="truncate text-sm font-medium text-black">
+            <span className="truncate text-sm font-medium text-foreground">
               {b.name}
             </span>
           </div>

@@ -72,7 +72,7 @@ export default function TopProductsBoard({ topProducts }: Props) {
                 )}
                 <ProductName
                   name={p.name}
-                  className="text-sm font-medium text-black"
+                  className="text-sm font-medium text-foreground truncate"
                 />
               </div>
               <span

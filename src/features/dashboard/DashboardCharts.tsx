@@ -91,7 +91,7 @@ export default function DashboardCharts({
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-black">Sales Overview</CardTitle>
+            <CardTitle className="text-foreground">Sales Overview</CardTitle>
             <Tabs value={range} onValueChange={handleRange}>
               <TabsList className="grid grid-cols-3">
                 <TabsTrigger value="daily">Daily</TabsTrigger>
@@ -151,7 +151,7 @@ export default function DashboardCharts({
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <Card className="lg:col-span-1">
           <CardHeader>
-            <CardTitle className="text-black">Top Categories</CardTitle>
+            <CardTitle className="text-foreground">Top Categories</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={260}>
@@ -185,9 +185,9 @@ export default function DashboardCharts({
                         backgroundColor: PIE_COLORS[index % PIE_COLORS.length],
                       }}
                     />
-                    <span className="text-sm text-black">{c.name}</span>
+                    <span className="text-sm text-foreground">{c.name}</span>
                   </div>
-                  <span className="text-sm font-medium text-black">
+                  <span className="text-sm font-medium text-foreground">
                     {formatNumber(c.value)}
                   </span>
                 </div>
@@ -198,7 +198,7 @@ export default function DashboardCharts({
 
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle className="text-black">Customer Growth</CardTitle>
+            <CardTitle className="text-foreground">Customer Growth</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -230,7 +230,7 @@ export default function DashboardCharts({
         {/* Orders Summary - 4 ô màu */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-black">Orders Summary</CardTitle>
+            <CardTitle className="text-foreground">Orders Summary</CardTitle>
           </CardHeader>
           <CardContent>
             <OrdersSummary ordersByStatus={ordersByStatus} />
@@ -240,7 +240,7 @@ export default function DashboardCharts({
         {/* Top Brands - dạng list có STT */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-black">Top Brands</CardTitle>
+            <CardTitle className="text-foreground">Top Brands</CardTitle>
           </CardHeader>
           <CardContent>
             <BrandList brands={brands} />
@@ -250,7 +250,7 @@ export default function DashboardCharts({
         {/* Top Products */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-black">Top Products</CardTitle>
+            <CardTitle className="text-foreground">Top Products</CardTitle>
           </CardHeader>
           <CardContent>
             <TopProductsBoard topProducts={topProducts} />

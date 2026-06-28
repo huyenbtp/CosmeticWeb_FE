@@ -5,14 +5,30 @@ export interface IDashboardSummary {
   totalProducts: number;
 }
 
-export interface IRevenuePoint {
-  date: string;
+export interface ISalesOverviewPoint {
+  label: string;
   revenue: number;
+  orders: number;
+}
+
+export interface ICategoryPoint {
+  name: string;
+  value: number;
+}
+
+export interface ICustomerGrowthPoint {
+  month: string;
+  customers: number;
 }
 
 export interface IOrderStatusPoint {
   status: string;
   count: number;
+}
+
+export interface IBrandPoint {
+  name: string;
+  value: number;
 }
 
 export interface ITopProductPoint {
@@ -23,7 +39,10 @@ export interface ITopProductPoint {
 
 export interface IDashboardAnalytics {
   summary: IDashboardSummary;
-  revenueByDate: IRevenuePoint[];
+  salesOverview: ISalesOverviewPoint[];
+  categories: ICategoryPoint[];
+  customerGrowth: ICustomerGrowthPoint[];
   ordersByStatus: IOrderStatusPoint[];
+  brands: IBrandPoint[];
   topProducts: ITopProductPoint[];
 }
