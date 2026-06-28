@@ -1,3 +1,5 @@
-export default function AdminDashboard() {
-  return <h1 className="text-2xl font-semibold">Welcome, Admin!</h1>;
+import StockManagementPage from "@/features/reports/stock/StockManagementPage";
+
+export default function Page() {
+  return <StockManagementPage />;
 }

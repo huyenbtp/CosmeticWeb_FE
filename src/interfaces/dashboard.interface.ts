@@ -28,6 +28,7 @@ export interface IOrderStatusPoint {
 
 export interface IBrandPoint {
   name: string;
+  logo?: string;
   value: number;
 }
 

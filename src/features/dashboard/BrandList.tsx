@@ -1,5 +1,6 @@
 "use client";
 
+import { ImageWithFallback } from "@/components/layout/ImageWithFallback";
 import { IBrandPoint } from "@/interfaces/dashboard.interface";
 
 const formatNumber = (value: number) => value.toLocaleString("vi-VN");
@@ -26,12 +27,7 @@ export default function BrandList({ brands }: Props) {
               {index + 1}
             </span>
             {/* Ô vuông chữ cái đầu */}
-            <div
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-base font-bold text-white"
-              style={{ backgroundColor: SHADES[index % SHADES.length] }}
-            >
-              {b.name.charAt(0).toUpperCase()}
-            </div>
+            <ImageWithFallback src={b.logo} alt={b.name} className="h-8 w-8 rounded-md" />
             {/* Tên brand */}
             <span className="truncate text-sm font-medium text-foreground">
               {b.name}
